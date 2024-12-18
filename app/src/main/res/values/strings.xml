@@ -7,4 +7,5 @@
     <string name="ok">OK</string>
     <string name="error">Error</string>
     <string name="error_icon">Error Icon</string>
+    <string name="user_profile_picture">User Profile Picture</string>
 </resources>

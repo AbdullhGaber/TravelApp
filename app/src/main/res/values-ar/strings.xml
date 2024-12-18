@@ -8,4 +8,5 @@
     <string name="ok">موافق</string>
     <string name="error">خطأ</string>
     <string name="error_icon">ايقونة خطأ</string>
+    <string name="user_profile_picture">صورة الملف الشخصي للمستخدم</string>
 </resources>
