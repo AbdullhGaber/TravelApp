@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.google.gms.google.services)
 }
 
@@ -38,6 +40,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.hilt.android)
+    ksp(libs.dagger.hilt.android.compiler)
     implementation(project(":domain"))
     implementation(libs.firebase.auth)
     testImplementation(libs.junit)

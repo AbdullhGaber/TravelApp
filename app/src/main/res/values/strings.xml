@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">TravelApp</string>
+    <string name="register_screen_header">Register Screen Header</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="upload_your_profile_picture">Upload Your Profile Picture</string>
+    <string name="password_visibility_icon">password visibility icon</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
+    <string name="error_icon">Error Icon</string>
+    <string name="user_profile_picture">User Profile Picture</string>
 </resources>
