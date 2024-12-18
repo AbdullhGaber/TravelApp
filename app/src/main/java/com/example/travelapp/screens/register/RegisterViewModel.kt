@@ -1,7 +1,11 @@
 package com.example.travelapp.screens.register
 
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +26,9 @@ class RegisterViewModel @Inject constructor(
 ): ViewModel() {
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
+
+    private val _profileImageStateFlow = MutableStateFlow<Resource<Bitmap?>>(Resource.Unspecified())
+    val profileImageStateFlow = _profileImageStateFlow.asStateFlow()
 
     private val _navigationSharedFlow = MutableSharedFlow<Boolean>()
     val navigationSharedFlow = _navigationSharedFlow.asSharedFlow()
@@ -54,6 +61,35 @@ class RegisterViewModel @Inject constructor(
 
             is RegisterScreenEvents.ClearAuthFlowState -> {
                 clearAuthStateFlow()
+            }
+
+            is RegisterScreenEvents.OnChooseImageClick ->{
+                onChooseImageClick(event.contentResolver,event.uri)
+            }
+        }
+    }
+
+    private fun onChooseImageClick(
+        contentResolver: ContentResolver,
+        uri : Uri?
+    ){
+        if (uri == null) {
+            viewModelScope.launch {
+                _profileImageStateFlow.emit(Resource.Failure("No Image Chosen"))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _profileImageStateFlow.emit(Resource.Loading())
+            try {
+                val imageInputStream = contentResolver.openInputStream(uri)
+                val bitmap = imageInputStream.use { stream ->
+                    BitmapFactory.decodeStream(stream)
+                }
+                _profileImageStateFlow.emit(Resource.Success(bitmap))
+            } catch (e: Exception) {
+                _profileImageStateFlow.emit(Resource.Failure("Failed to load image : ${e.message}"))
             }
         }
     }
