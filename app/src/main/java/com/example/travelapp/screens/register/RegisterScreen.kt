@@ -305,7 +305,7 @@ private fun RegisterForm(
     PrimaryButton(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 48.dp),
+            .padding(horizontal = 16.dp),
         text = stringResource(id = R.string.sign_up).uppercase(),
         enabled = viewModel.isNoErrors(),
         onClick = {
@@ -315,18 +315,23 @@ private fun RegisterForm(
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    TextButton(
-        onClick = {
-            navigateToSignIn()
-        },
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = LightBlue
-        )
-    ) {
-        Text(
-            text = "Already have an account? Sign In",
-            fontWeight = FontWeight.Bold,
-        )
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        TextButton(
+            onClick = {
+                navigateToSignIn()
+            },
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = LightBlue
+            )
+        ) {
+            Text(
+                text = "Already have an account? Sign In",
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
