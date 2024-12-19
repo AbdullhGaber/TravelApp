@@ -31,6 +31,10 @@ fun NavGraph(
 //                           popUpTo(Route.RegisterScreen.route) { inclusive = true } // Clears the back stack
 //                       }
                    },
+
+                   navigateToSignIn = {
+                       navController.navigate(Route.LoginScreen.route)
+                   }
                )
             }
 
