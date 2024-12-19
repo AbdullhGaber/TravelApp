@@ -23,7 +23,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -311,8 +310,8 @@ private fun RegisterScreenHeader() {
     ) {
         Image(
             modifier = Modifier.matchParentSize(),
-            painter = painterResource(id = R.drawable.register_screen_header),
-            contentDescription = stringResource(R.string.register_screen_header),
+            painter = painterResource(id = R.drawable.auth_screen_header),
+            contentDescription = stringResource(R.string.auth_screen_header),
             contentScale = ContentScale.Crop,
         )
 
