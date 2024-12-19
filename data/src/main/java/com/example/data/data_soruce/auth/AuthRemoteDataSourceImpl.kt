@@ -24,4 +24,20 @@ class AuthRemoteDataSourceImpl @Inject constructor(
                 Log.e("FIB Auth","Error : ${it.message}")
             }
     }
+
+    override fun login(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        mFirebaseAuth.signInWithEmailAndPassword(email,password)
+            .addOnSuccessListener {
+                Log.e("FIB Auth" , "User logged Successfully")
+                onSuccess()
+            }.addOnFailureListener {
+                onFailure(it)
+                Log.e("FIB Auth","Error : ${it.message}")
+            }
+    }
 }
