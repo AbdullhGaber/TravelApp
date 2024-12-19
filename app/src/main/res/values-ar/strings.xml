@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">تطبيق ملاحظات السفر</string>
-    <string name="register_screen_header">رأس صفحة التسجيل</string>
+    <string name="auth_screen_header">رأس صفحة التسجيل</string>
     <string name="sign_up">انشاء حساب</string>
     <string name="upload_your_profile_picture">ارفع صورتك الشخصية</string>
     <string name="password_visibility_icon">ايقونة اظهار كلمة المرور</string>
@@ -9,4 +9,8 @@
     <string name="error">خطأ</string>
     <string name="error_icon">ايقونة خطأ</string>
     <string name="user_profile_picture">صورة الملف الشخصي للمستخدم</string>
+    <string name="sign_in">Sign In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in_with">Sign in with</string>
 </resources>
