@@ -1,7 +1,6 @@
 package com.example.data.data_soruce.auth
 
 import android.util.Log
-import com.example.domain.entity.TripUser
 import com.example.domain.repositories.auth.AuthRemoteDataSource
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject

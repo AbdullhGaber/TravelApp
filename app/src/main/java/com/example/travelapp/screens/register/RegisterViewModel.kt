@@ -5,12 +5,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.uitls.Resource
+import com.example.domain.entity.TripUserEntity
 import com.example.domain.use_cases.auth.AuthUseCases
+import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.utils.areRegisterFieldsValid
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,11 +19,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val mAuthUseCases: AuthUseCases
+    private val mAuthUseCases: AuthUseCases,
+    private val mUserUseCases: UserUseCases
 ): ViewModel() {
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
@@ -34,6 +37,8 @@ class RegisterViewModel @Inject constructor(
     val navigationSharedFlow = _navigationSharedFlow.asSharedFlow()
 
     private val registerErrorState = mutableStateOf("")
+
+    val imageUriState = mutableStateOf<Uri?>(null)
 
     val emailState = mutableStateOf("")
     val emailErrorState = mutableStateOf("")
@@ -55,25 +60,24 @@ class RegisterViewModel @Inject constructor(
 
     fun onEvent(event : RegisterScreenEvents){
         when(event){
-            is RegisterScreenEvents.Register -> {
+            is RegisterScreenEvents.OnSubmitButtonClick -> {
                 register()
             }
 
-            is RegisterScreenEvents.ClearAuthFlowState -> {
+            is RegisterScreenEvents.OnErrorDismiss -> {
                 clearAuthStateFlow()
             }
 
             is RegisterScreenEvents.OnChooseImageClick ->{
-                onChooseImageClick(event.contentResolver,event.uri)
+                displayChosenImage(event.contentResolver)
             }
         }
     }
 
-    private fun onChooseImageClick(
+    private fun displayChosenImage(
         contentResolver: ContentResolver,
-        uri : Uri?
     ){
-        if (uri == null) {
+        if (imageUriState.value == null) {
             viewModelScope.launch {
                 _profileImageStateFlow.emit(Resource.Failure("No Image Chosen"))
             }
@@ -83,7 +87,7 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             _profileImageStateFlow.emit(Resource.Loading())
             try {
-                val imageInputStream = contentResolver.openInputStream(uri)
+                val imageInputStream = contentResolver.openInputStream(imageUriState.value!!)
                 val bitmap = imageInputStream.use { stream ->
                     BitmapFactory.decodeStream(stream)
                 }
@@ -110,9 +114,44 @@ class RegisterViewModel @Inject constructor(
                     password = passwordState.value,
                     onSuccess = {
                         viewModelScope.launch {
-                            _authStateFlow.emit(Resource.Success(Unit))
-                            _navigationSharedFlow.emit(true)
-                            Log.e("FIB Auth ViewModel" , "Registered successfully")
+                            saveImage(
+                                fileName = "user_${UUID.randomUUID()}.jpg",
+                                uri = imageUriState.value,
+                                onSuccess = { imagePath,imageUrlParam ->
+                                    val user = TripUserEntity(
+                                        email = emailState.value,
+                                        name = nameState.value,
+                                        phoneNumber = phoneNoState.value,
+                                        imageURL = imageUrlParam,
+                                        imagePath = imagePath
+                                    )
+                                    Log.e("Imgur Save" , "Imaged Saved")
+
+                                    saveUser(
+                                        user = user,
+                                        onSuccess = {
+                                            viewModelScope.launch {
+                                                _authStateFlow.emit(Resource.Success(Unit))
+                                                _navigationSharedFlow.emit(true)
+                                            }
+                                        },
+                                        onFailure = {
+                                            viewModelScope.launch {
+                                                _authStateFlow.emit(Resource.Failure(it.message))
+                                            }
+                                        }
+                                    )
+
+                                    Log.e("FIB Auth ViewModel" , "Registered successfully")
+                                },
+                                onFailure = {
+                                    viewModelScope.launch {
+                                        _authStateFlow.emit(Resource.Failure(it.message))
+                                    }
+                                }
+                            )
+
+
                         }
                     },
                     onFailure = {
@@ -148,5 +187,21 @@ class RegisterViewModel @Inject constructor(
                 && (phoneNoState.value.isNotEmpty() && phoneNoErrorState.value.isEmpty())
                 && (passwordState.value.isNotEmpty() && passwordErrorState.value.isEmpty())
                 && (rePasswordState.value.isNotEmpty() && rePasswordErrorState.value.isEmpty())
+    }
+
+    private fun saveUser(
+        user : TripUserEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
+    ){
+        mUserUseCases.saveUserUseCase(user, onSuccess, onFailure)
+    }
+    private fun saveImage(
+        fileName : String,
+        uri : Uri?,
+        onSuccess : (String? ,String) -> Unit,
+        onFailure : (Throwable) -> Unit
+    ){
+        mUserUseCases.saveImageUseCase(fileName, uri, onSuccess, onFailure)
     }
 }
