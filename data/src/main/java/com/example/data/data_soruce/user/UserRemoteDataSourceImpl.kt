@@ -8,7 +8,7 @@ import com.example.data.model.ImageResponseModel
 import com.example.data.web_services.image.ImgurService
 import com.example.domain.entity.TripUserEntity
 import com.example.domain.repositories.user.UserRemoteDataSource
-import com.example.mapper.toEntity
+import com.example.data.mapper.toEntity
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
