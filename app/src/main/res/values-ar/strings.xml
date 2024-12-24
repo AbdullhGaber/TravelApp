@@ -13,4 +13,6 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="sign_in_with">Sign in with</string>
+    <string name="upcoming_screen_header">Upcoming Screen Header</string>
+    <string name="there_are_no_items_here">There are no items here</string>
 </resources>
