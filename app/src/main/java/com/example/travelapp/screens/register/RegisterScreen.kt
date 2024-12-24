@@ -79,7 +79,7 @@ fun RegisterScreen(
             ErrorDialog(
                 text = authStateFlow.value.message.toString(),
                 onDismiss = {
-                   viewModel.onEvent(RegisterScreenEvents.ClearAuthFlowState)
+                   viewModel.onEvent(RegisterScreenEvents.OnErrorDismiss)
                 }
             )
         }
@@ -131,11 +131,12 @@ private fun RegisterScreenContent(
 private fun RegisterFormHeader(
     viewModel: RegisterViewModel,
 ) {
+    val cr = LocalContext.current.contentResolver
     val profileImageStateFlow = viewModel.profileImageStateFlow.collectAsState()
-    val contentResolver = LocalContext.current.contentResolver
     val arl = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
-            viewModel.onEvent(RegisterScreenEvents.OnChooseImageClick(contentResolver , it))
+            viewModel.imageUriState.value = uri
+            viewModel.onEvent(RegisterScreenEvents.OnChooseImageClick(cr))
         }
     }
 
@@ -309,7 +310,7 @@ private fun RegisterForm(
         text = stringResource(id = R.string.sign_up).uppercase(),
         enabled = viewModel.isNoErrors(),
         onClick = {
-            viewModel.onEvent(RegisterScreenEvents.Register)
+            viewModel.onEvent(RegisterScreenEvents.OnSubmitButtonClick)
         }
     )
 
