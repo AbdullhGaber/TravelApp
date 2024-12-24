@@ -1,4 +1,4 @@
-package com.example.mapper
+package com.example.data.mapper
 
 import com.example.data.model.ImageDataModel
 import com.example.data.model.ImageResponseModel

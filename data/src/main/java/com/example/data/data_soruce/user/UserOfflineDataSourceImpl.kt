@@ -6,8 +6,8 @@ import android.util.Log
 import com.example.data.database.UserDao
 import com.example.domain.entity.TripUserEntity
 import com.example.domain.repositories.user.UserOfflineDataSource
-import com.example.mapper.toEntity
-import com.example.mapper.toModel
+import com.example.data.mapper.toEntity
+import com.example.data.mapper.toModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
