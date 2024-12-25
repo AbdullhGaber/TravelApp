@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,26 +30,29 @@ import com.example.travelapp.ui.theme.LightBlue
 
 @Composable
 fun UpcomingScreen(){
-    Box(modifier = Modifier.fillMaxSize()){
-        Column(
-            Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Image(
-                modifier = Modifier
-                    .fillMaxHeight(0.3f)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.upcoming_header),
-                contentDescription = stringResource(R.string.upcoming_screen_header)
+
+    Scaffold { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)){
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Image(
+                    modifier = Modifier
+                        .fillMaxHeight(0.3f)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(id = R.drawable.upcoming_header),
+                    contentDescription = stringResource(R.string.upcoming_screen_header)
+                )
+            }
+
+            ShowNoItems(
+                modifier = Modifier.align(Alignment.Center)
             )
         }
-
-        ShowNoItems(
-            modifier = Modifier.align(Alignment.Center)
-        )
     }
 }
 
