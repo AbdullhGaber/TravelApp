@@ -14,4 +14,10 @@
     <string name="sign_in_with">Sign in with</string>
     <string name="upcoming_screen_header">Upcoming Screen Header</string>
     <string name="there_are_no_items_here">There are no items here!</string>
+    <string name="others">Others</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="history">History</string>
+    <string name="history_map">History Map</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="drawer_item_icon">Drawer item icon</string>
 </resources>

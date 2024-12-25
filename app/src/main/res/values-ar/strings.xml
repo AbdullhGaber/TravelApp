@@ -9,10 +9,16 @@
     <string name="error">خطأ</string>
     <string name="error_icon">ايقونة خطأ</string>
     <string name="user_profile_picture">صورة الملف الشخصي للمستخدم</string>
-    <string name="sign_in">Sign In</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="sign_in_with">Sign in with</string>
-    <string name="upcoming_screen_header">Upcoming Screen Header</string>
-    <string name="there_are_no_items_here">There are no items here</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="email">البريد الالكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="sign_in_with">تسجيل الدخول باستخدام</string>
+    <string name="upcoming_screen_header">رأس الصفحة الرئيسية</string>
+    <string name="there_are_no_items_here">لا يوجد عناصر هنا!</string>
+    <string name="others">أخرى</string>
+    <string name="upcoming">الرحلات القادمة</string>
+    <string name="history">تاريخ الرحلات</string>
+    <string name="history_map">تاريخ خرائط الرحلات</string>
+    <string name="sign_out">sign_out</string>
+    <string name="drawer_item_icon">Drawer item icon</string>
 </resources>
