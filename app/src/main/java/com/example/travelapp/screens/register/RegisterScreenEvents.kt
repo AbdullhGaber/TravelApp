@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 
 sealed class RegisterScreenEvents {
-    data object Register : RegisterScreenEvents()
-    data object ClearAuthFlowState : RegisterScreenEvents()
-    data class OnChooseImageClick(val contentResolver: ContentResolver, val uri : Uri) : RegisterScreenEvents()
+    data object OnSubmitButtonClick : RegisterScreenEvents()
+    data object OnErrorDismiss : RegisterScreenEvents()
+    data class OnChooseImageClick(val contentResolver: ContentResolver) : RegisterScreenEvents()
 }

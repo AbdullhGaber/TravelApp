@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,7 +56,8 @@ import com.example.travelapp.utils.isUsernameValid
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel,
-    navigateToHome : () -> Unit
+    navigateToHome : () -> Unit,
+    navigateToSignIn : () -> Unit,
 ){
 
     val authStateFlow = viewModel.authStateFlow.collectAsState()
@@ -76,7 +79,7 @@ fun RegisterScreen(
             ErrorDialog(
                 text = authStateFlow.value.message.toString(),
                 onDismiss = {
-                   viewModel.onEvent(RegisterScreenEvents.ClearAuthFlowState)
+                   viewModel.onEvent(RegisterScreenEvents.OnErrorDismiss)
                 }
             )
         }
@@ -89,7 +92,10 @@ fun RegisterScreen(
             }
         }
 
-        RegisterScreenContent(viewModel)
+        RegisterScreenContent(
+            viewModel = viewModel,
+            navigateToSignIn = navigateToSignIn
+        )
 
     }
 }
@@ -97,6 +103,7 @@ fun RegisterScreen(
 @Composable
 private fun RegisterScreenContent(
     viewModel: RegisterViewModel,
+    navigateToSignIn : () -> Unit
 ) {
     val verticalScrollState = rememberScrollState()
 
@@ -112,7 +119,10 @@ private fun RegisterScreenContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            RegisterForm(viewModel)
+            RegisterForm(
+                viewModel = viewModel,
+                navigateToSignIn = navigateToSignIn
+            )
         }
     }
 }
@@ -121,11 +131,12 @@ private fun RegisterScreenContent(
 private fun RegisterFormHeader(
     viewModel: RegisterViewModel,
 ) {
+    val cr = LocalContext.current.contentResolver
     val profileImageStateFlow = viewModel.profileImageStateFlow.collectAsState()
-    val contentResolver = LocalContext.current.contentResolver
     val arl = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
-            viewModel.onEvent(RegisterScreenEvents.OnChooseImageClick(contentResolver , it))
+            viewModel.imageUriState.value = uri
+            viewModel.onEvent(RegisterScreenEvents.OnChooseImageClick(cr))
         }
     }
 
@@ -178,7 +189,10 @@ private fun RegisterFormHeader(
 }
 
 @Composable
-private fun RegisterForm(viewModel: RegisterViewModel) {
+private fun RegisterForm(
+    viewModel: RegisterViewModel,
+    navigateToSignIn : () -> Unit
+) {
     TripTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -292,13 +306,34 @@ private fun RegisterForm(viewModel: RegisterViewModel) {
     PrimaryButton(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 48.dp),
+            .padding(horizontal = 16.dp),
         text = stringResource(id = R.string.sign_up).uppercase(),
         enabled = viewModel.isNoErrors(),
         onClick = {
-            viewModel.onEvent(RegisterScreenEvents.Register)
+            viewModel.onEvent(RegisterScreenEvents.OnSubmitButtonClick)
         }
     )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        TextButton(
+            onClick = {
+                navigateToSignIn()
+            },
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = LightBlue
+            )
+        ) {
+            Text(
+                text = "Already have an account? Sign In",
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
 }
 
 @Composable
@@ -331,6 +366,7 @@ private fun RegisterScreenHeader() {
 fun PreviewRegisterScreen() {
     RegisterScreen(
         viewModel = hiltViewModel(),
-        navigateToHome = {}
+        navigateToHome = {},
+        navigateToSignIn = {}
     )
 }
