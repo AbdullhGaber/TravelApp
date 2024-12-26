@@ -11,7 +11,7 @@ interface AuthRepository {
     fun login(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     )
 }
@@ -27,7 +27,7 @@ interface AuthRemoteDataSource{
     fun login(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     )
 }

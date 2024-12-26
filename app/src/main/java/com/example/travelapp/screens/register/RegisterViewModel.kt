@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
 import com.example.domain.entity.TripUserEntity
 import com.example.domain.use_cases.auth.AuthUseCases
@@ -142,6 +143,8 @@ class RegisterViewModel @Inject constructor(
                                         }
                                     )
 
+                                    DataUtil.tripUser = user
+
                                     Log.e("FIB Auth ViewModel" , "Registered successfully")
                                 },
                                 onFailure = {
@@ -150,8 +153,6 @@ class RegisterViewModel @Inject constructor(
                                     }
                                 }
                             )
-
-
                         }
                     },
                     onFailure = {
