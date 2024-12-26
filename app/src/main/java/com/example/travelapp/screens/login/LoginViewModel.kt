@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
 import com.example.domain.use_cases.auth.AuthUseCases
+import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.utils.isEmailValid
 import com.example.travelapp.utils.isPasswordValid
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val mAuthUseCases: AuthUseCases
+    private val mAuthUseCases: AuthUseCases,
+    private val mUserUseCases: UserUseCases
 ) : ViewModel() {
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
@@ -61,10 +64,11 @@ class LoginViewModel @Inject constructor(
                 mAuthUseCases.loginUseCase(
                     email = emailState.value,
                     password = passwordState.value,
-                    onSuccess = {
+                    onSuccess = { uid ->
                         viewModelScope.launch {
                             _authStateFlow.emit(Resource.Success(Unit))
                             _navigationSharedFlow.emit(true)
+                            uid?.let{getUser(it)}
                             Log.e("FIB Auth ViewModel" , "Logged successfully")
                         }
                     },
@@ -78,6 +82,18 @@ class LoginViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun getUser(uid : String){
+        mUserUseCases.getUserUseCase(
+            uid = uid,
+            onSuccess = { user ->
+                DataUtil.tripUser = user
+            },
+            onFailure = {
+                Log.e("FIB Auth ViewModel" , "Error : ${it.message}")
+            }
+        )
     }
 
     private fun areFieldsValid() : Boolean{
