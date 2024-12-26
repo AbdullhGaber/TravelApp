@@ -79,7 +79,7 @@ fun RegisterScreen(
             ErrorDialog(
                 text = authStateFlow.value.message.toString(),
                 onDismiss = {
-                   viewModel.onEvent(RegisterScreenEvents.ClearAuthFlowState)
+                   viewModel.onEvent(RegisterScreenEvents.OnErrorDismiss)
                 }
             )
         }
@@ -131,11 +131,12 @@ private fun RegisterScreenContent(
 private fun RegisterFormHeader(
     viewModel: RegisterViewModel,
 ) {
+    val cr = LocalContext.current.contentResolver
     val profileImageStateFlow = viewModel.profileImageStateFlow.collectAsState()
-    val contentResolver = LocalContext.current.contentResolver
     val arl = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
-            viewModel.onEvent(RegisterScreenEvents.OnChooseImageClick(contentResolver , it))
+            viewModel.imageUriState.value = uri
+            viewModel.onEvent(RegisterScreenEvents.OnChooseImageClick(cr))
         }
     }
 
@@ -305,28 +306,33 @@ private fun RegisterForm(
     PrimaryButton(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 48.dp),
+            .padding(horizontal = 16.dp),
         text = stringResource(id = R.string.sign_up).uppercase(),
         enabled = viewModel.isNoErrors(),
         onClick = {
-            viewModel.onEvent(RegisterScreenEvents.Register)
+            viewModel.onEvent(RegisterScreenEvents.OnSubmitButtonClick)
         }
     )
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    TextButton(
-        onClick = {
-            navigateToSignIn()
-        },
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = LightBlue
-        )
-    ) {
-        Text(
-            text = "Already have an account? Sign In",
-            fontWeight = FontWeight.Bold,
-        )
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        TextButton(
+            onClick = {
+                navigateToSignIn()
+            },
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = LightBlue
+            )
+        ) {
+            Text(
+                text = "Already have an account? Sign In",
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 

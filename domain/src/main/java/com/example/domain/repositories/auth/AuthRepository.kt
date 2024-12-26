@@ -1,7 +1,5 @@
 package com.example.domain.repositories.auth
 
-import com.example.domain.entity.TripUser
-
 interface AuthRepository {
     fun register(
         email : String,
@@ -13,7 +11,7 @@ interface AuthRepository {
     fun login(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     )
 }
@@ -29,7 +27,7 @@ interface AuthRemoteDataSource{
     fun login(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     )
 }
