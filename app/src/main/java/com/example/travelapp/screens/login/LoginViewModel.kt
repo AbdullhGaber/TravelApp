@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
+import com.example.domain.manager.LocalUserManager
 import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.utils.isEmailValid
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val mAuthUseCases: AuthUseCases,
-    private val mUserUseCases: UserUseCases
+    private val mUserUseCases: UserUseCases,
+    private val mLocalUserManager: LocalUserManager
 ) : ViewModel() {
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
@@ -88,6 +90,9 @@ class LoginViewModel @Inject constructor(
         mUserUseCases.getUserUseCase(
             uid = uid,
             onSuccess = { user ->
+                viewModelScope.launch {
+                    mLocalUserManager.saveUserUID(user.uid)
+                }
                 DataUtil.tripUser = user
             },
             onFailure = {
