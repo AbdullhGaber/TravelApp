@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.runtime)
     ksp(libs.room.compiler)
+    implementation(libs.datastore.preferences)
     implementation(project(":domain"))
     implementation(libs.firebase.auth)
     testImplementation(libs.junit)
