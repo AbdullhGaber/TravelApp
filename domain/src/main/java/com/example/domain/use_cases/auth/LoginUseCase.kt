@@ -9,7 +9,7 @@ class LoginUseCase @Inject constructor(
     operator fun invoke(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     ){
         mAuthRepository.login(email, password, onSuccess, onFailure)
