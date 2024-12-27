@@ -2,12 +2,12 @@ package com.example.travelapp.screens.nav_graph
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.travelapp.screens.login.LoginScreen
+import com.example.travelapp.screens.navigator.TripNavigator
 import com.example.travelapp.screens.register.RegisterScreen
 
 @Composable
@@ -27,9 +27,9 @@ fun NavGraph(
                RegisterScreen(
                    viewModel = hiltViewModel(),
                    navigateToHome = {
-//                       navController.navigate(Route.UpComingScreen.route) {
-//                           popUpTo(Route.RegisterScreen.route) { inclusive = true } // Clears the back stack
-//                       }
+                       navController.navigate(Route.HomeNavigation.route) {
+                           popUpTo(Route.RegisterScreen.route) { inclusive = true } // Clears the back stack
+                       }
                    },
 
                    navigateToSignIn = {
@@ -44,15 +44,21 @@ fun NavGraph(
                 LoginScreen(
                     viewModel = hiltViewModel(),
                     navigateToHome = {
-//                       navController.navigate(Route.UpComingScreen.route) {
-//                           popUpTo(Route.RegisterScreen.route) { inclusive = true } // Clears the back stack
-//                       }
+                       navController.navigate(Route.HomeNavigation.route) {
+                           popUpTo(Route.LoginScreen.route) { inclusive = true } // Clears the back stack
+                       }
                     },
                     navigateToSignUp = {
                         navController.navigate(Route.RegisterScreen.route)
                     }
                 )
             }
+        }
+
+        composable(
+            route = Route.HomeNavigation.route
+        ){
+            TripNavigator()
         }
     }
 }

@@ -8,8 +8,10 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
 import com.example.domain.entity.TripUserEntity
+import com.example.domain.manager.LocalUserManager
 import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.utils.areRegisterFieldsValid
@@ -25,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val mAuthUseCases: AuthUseCases,
-    private val mUserUseCases: UserUseCases
+    private val mUserUseCases: UserUseCases,
+    private val mLocalUserManager: LocalUserManager
 ): ViewModel() {
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
@@ -112,13 +115,14 @@ class RegisterViewModel @Inject constructor(
                 mAuthUseCases.registerUseCase(
                     email = emailState.value,
                     password = passwordState.value,
-                    onSuccess = {
+                    onSuccess = { uid ->
                         viewModelScope.launch {
                             saveImage(
                                 fileName = "user_${UUID.randomUUID()}.jpg",
                                 uri = imageUriState.value,
                                 onSuccess = { imagePath,imageUrlParam ->
                                     val user = TripUserEntity(
+                                        uid = uid ?: "-1",
                                         email = emailState.value,
                                         name = nameState.value,
                                         phoneNumber = phoneNoState.value,
@@ -133,6 +137,8 @@ class RegisterViewModel @Inject constructor(
                                             viewModelScope.launch {
                                                 _authStateFlow.emit(Resource.Success(Unit))
                                                 _navigationSharedFlow.emit(true)
+                                                mLocalUserManager.saveUserUID(user.uid)
+                                                DataUtil.tripUser = user
                                             }
                                         },
                                         onFailure = {
@@ -150,8 +156,6 @@ class RegisterViewModel @Inject constructor(
                                     }
                                 }
                             )
-
-
                         }
                     },
                     onFailure = {
