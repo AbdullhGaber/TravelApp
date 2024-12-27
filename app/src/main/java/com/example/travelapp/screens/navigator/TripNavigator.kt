@@ -57,7 +57,11 @@ fun TripNavigator(){
 
    ModalNavigationDrawer(
        drawerContent = {
-           DrawerContent(navController = navController)
+           ModalDrawerSheet(
+               modifier = Modifier.fillMaxWidth(0.8f) // Adjust the width of the drawer
+           ) {
+               DrawerContent(navController = navController)
+           }
        }
    ){
         NavHost(navController = navController, startDestination = Route.UpComingScreen.route){
@@ -75,7 +79,7 @@ private fun DrawerContent(
     navigatorViewModel: NavigatorViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
-    ModalDrawerSheet {
+    ModalDrawerSheet{
         Box(
             modifier = Modifier
                 .fillMaxHeight(0.3f)
