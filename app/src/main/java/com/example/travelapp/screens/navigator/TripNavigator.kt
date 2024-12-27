@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -33,16 +34,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.data.uitls.DataUtil
+import com.example.data.uitls.NetworkUtil
 import com.example.travelapp.R
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.navigator.components.NavItems
 import com.example.travelapp.screens.upcoming.UpcomingScreen
 import com.example.travelapp.ui.theme.LightGray
+import java.io.File
 
 @Composable
 fun TripNavigator(){
@@ -50,9 +57,13 @@ fun TripNavigator(){
 
    ModalNavigationDrawer(
        drawerContent = {
-           DrawerContent(navController)
+           ModalDrawerSheet(
+               modifier = Modifier.fillMaxWidth(0.8f) // Adjust the width of the drawer
+           ) {
+               DrawerContent(navController = navController)
+           }
        }
-   ) {
+   ){
         NavHost(navController = navController, startDestination = Route.UpComingScreen.route){
             composable(
                 route = Route.UpComingScreen.route
@@ -64,8 +75,11 @@ fun TripNavigator(){
 }
 
 @Composable
-private fun DrawerContent(navController: NavHostController) {
-    ModalDrawerSheet {
+private fun DrawerContent(
+    navigatorViewModel: NavigatorViewModel = hiltViewModel(),
+    navController: NavHostController
+) {
+    ModalDrawerSheet{
         Box(
             modifier = Modifier
                 .fillMaxHeight(0.3f)
@@ -84,21 +98,38 @@ private fun DrawerContent(navController: NavHostController) {
                     .matchParentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(100.dp),
-                    contentScale = ContentScale.FillBounds,
-                    painter = painterResource(id = R.drawable.auth_screen_header),
-                    contentDescription = stringResource(
-                        R.string.user_profile_picture
+                val context = LocalContext.current
+
+                if(NetworkUtil.isDeviceConnected(context)){
+                    AsyncImage(
+                        model = DataUtil.tripUser?.imageURL,
+                        error = painterResource(id = R.drawable.user_ic),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp),
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = stringResource(
+                            R.string.user_profile_picture
+                        )
                     )
-                )
+                }else{
+                    AsyncImage(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(100.dp),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(File(DataUtil.tripUser?.imagePath?:""))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Cached Image",
+                        contentScale = ContentScale.Crop,
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Abdullh Gaber",
+                    text = DataUtil.tripUser?.name ?: "No User",
                     style = TextStyle(
                         shadow = Shadow(
                             color = Color.Black,
@@ -114,7 +145,7 @@ private fun DrawerContent(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "drabdullh@gmail.com",
+                    text = DataUtil.tripUser?.email ?: "No Email",
                     style = TextStyle(
                         shadow = Shadow(
                             color = Color.Black,
@@ -163,7 +194,7 @@ private fun DrawerContent(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            thickness = 1.dp,
+            thickness = 0.5.dp,
             color = LightGray
         )
 

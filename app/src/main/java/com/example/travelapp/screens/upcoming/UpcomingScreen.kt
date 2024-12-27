@@ -50,7 +50,7 @@ fun UpcomingScreen(){
             }
 
             ShowNoItems(
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center).padding(horizontal = 8.dp)
             )
         }
     }
@@ -74,7 +74,7 @@ fun ShowNoItems(
 
         Text(
             text = stringResource(R.string.there_are_no_items_here),
-            fontSize = 30.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             color = LightBlue
         )

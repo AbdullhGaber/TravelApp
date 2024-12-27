@@ -1,15 +1,19 @@
 package com.example.data.repositories.user
 
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
+import com.example.data.uitls.NetworkUtil
 import com.example.domain.entity.TripUserEntity
 import com.example.domain.repositories.user.UserOfflineDataSource
 import com.example.domain.repositories.user.UserRemoteDataSource
 import com.example.domain.repositories.user.UserRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
+    @ApplicationContext private val mContext: Context,
     private val mUserRemoteDataSource: UserRemoteDataSource,
     private val mUserOfflineDataSource: UserOfflineDataSource
 ): UserRepository {
@@ -34,8 +38,15 @@ class UserRepositoryImpl @Inject constructor(
         uid: String,
         onSuccess: (TripUserEntity) -> Unit,
         onFailure: (Throwable) -> Unit,
-    ) {
-        mUserRemoteDataSource.getUser(uid, onSuccess, onFailure)
+    ){
+        if(NetworkUtil.isDeviceConnected(mContext)){
+            mUserRemoteDataSource.getUser(uid, onSuccess, onFailure)
+        }
+
+        runBlocking{
+            val user = mUserOfflineDataSource.getUser(uid)
+            user?.let{ onSuccess(it)}
+        }
     }
 
     override fun uploadImage(
