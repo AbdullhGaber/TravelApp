@@ -9,7 +9,7 @@ class RegisterUseCase @Inject constructor(
     operator fun invoke(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     ){
         mAuthRepository.register(email, password, onSuccess, onFailure)

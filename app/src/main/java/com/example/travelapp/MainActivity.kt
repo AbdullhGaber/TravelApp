@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.travelapp.screens.nav_graph.NavGraph
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.ui.theme.TravelAppTheme
@@ -16,7 +17,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TravelAppTheme {
-                NavGraph(startDestination = Route.AuthNavigation.route)
+                val viewModel : MainViewModel = hiltViewModel()
+                NavGraph(startDestination = viewModel.startDestination.value)
             }
         }
     }

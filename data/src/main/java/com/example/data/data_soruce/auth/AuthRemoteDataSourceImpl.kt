@@ -12,13 +12,13 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     override fun register(
         email : String,
         password : String,
-        onSuccess : () -> Unit,
+        onSuccess : (String?) -> Unit,
         onFailure : (Throwable) -> Unit
     ){
         mFirebaseAuth.createUserWithEmailAndPassword(email,password)
-            .addOnSuccessListener {
+            .addOnSuccessListener { result ->
                 Log.e("FIB Auth" , "User Registered Successfully")
-                onSuccess()
+                onSuccess(result.user?.uid)
             }.addOnFailureListener {
                 onFailure(it)
                 Log.e("FIB Auth","Error : ${it.message}")
