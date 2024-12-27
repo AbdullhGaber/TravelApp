@@ -25,9 +25,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
         onSuccess : () -> Unit,
         onFailure : (Throwable) -> Unit
     ) {
-        val userDocRef = mFireStore.collection(TripUserEntity.USER_COLLECTION).document()
-
-        user.uid = userDocRef.id
+        val userDocRef = mFireStore.collection(TripUserEntity.USER_COLLECTION).document(user.uid)
 
         userDocRef.set(user)
             .addOnSuccessListener {
