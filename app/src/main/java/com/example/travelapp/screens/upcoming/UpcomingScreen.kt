@@ -30,28 +30,42 @@ import com.example.travelapp.ui.theme.LightBlue
 
 @Composable
 fun UpcomingScreen(){
-
     Scaffold { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)){
             Column(
                 Modifier
                     .fillMaxSize()
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Image(
-                    modifier = Modifier
-                        .fillMaxHeight(0.3f)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop,
-                    painter = painterResource(id = R.drawable.upcoming_header),
-                    contentDescription = stringResource(R.string.upcoming_screen_header)
-                )
+                Box(modifier = Modifier
+                    .fillMaxHeight(0.3f)
+                    .fillMaxWidth()
+                ){
+                    Image(
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.Crop,
+                        painter = painterResource(id = R.drawable.upcoming_header),
+                        contentDescription = stringResource(R.string.upcoming_screen_header)
+                    )
+                    Text(
+                        modifier = Modifier.align(Alignment.BottomStart).padding(24.dp),
+                        text = stringResource(R.string.my_trips),
+                        color = Color.White,
+                        fontSize = 30.sp
+                    )
+                }
             }
 
-            ShowNoItems(
-                modifier = Modifier.align(Alignment.Center).padding(horizontal = 8.dp)
-            )
+            if(false){
+                ShowNoItems(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 8.dp)
+                )
+            }
         }
     }
 }
