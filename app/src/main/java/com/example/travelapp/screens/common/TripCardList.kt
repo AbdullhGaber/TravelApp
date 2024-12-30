@@ -25,6 +25,7 @@ fun TripCardList(
         items(trips){
             TripCard(
                 modifier = Modifier.padding(vertical  = 10.dp),
+                trip = it,
                 onAddNotesClick = onAddNotesClick,
                 onEditClick = onEditClick,
                 onDeleteClick =onDeleteClick ,

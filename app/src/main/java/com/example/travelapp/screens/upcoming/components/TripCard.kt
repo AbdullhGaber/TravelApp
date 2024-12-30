@@ -124,7 +124,7 @@ fun TripCard(
                 .padding(horizontal = 32.dp, vertical = if (isMenuOpened.value) 8.dp else 0.dp)
         ) {
             if (isMenuOpened.value) {
-                TripDetailsCollapsingMenu()
+                TripDetailsCollapsingMenu(trip)
             }
         }
 
@@ -149,20 +149,22 @@ fun TripCard(
 }
 
 @Composable
-fun TripDetailsCollapsingMenu(){
+fun TripDetailsCollapsingMenu(
+    trip: TripEntity
+){
     Column(
         Modifier
             .fillMaxWidth()
             .background(White)
-            .padding(horizontal = 32.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     ){
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Text(text = "2/11/2019")
-            Text(text = "22:00")
+            Text(text = trip.date)
+            Text(text = trip.time)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -173,11 +175,11 @@ fun TripDetailsCollapsingMenu(){
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Text(
-                text = "tourism travel",
+                text = trip.name,
                 fontWeight = FontWeight.Bold
             )
 
-            Text(text = "Upcoming")
+            Text(text = trip.status)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -196,7 +198,7 @@ fun TripDetailsCollapsingMenu(){
                     verticalAlignment = Alignment.CenterVertically,
                 ){
                     UnfilledCircle()
-                    Text(text = "Cairo")
+                    Text(text = trip.startDestination)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -214,7 +216,7 @@ fun TripDetailsCollapsingMenu(){
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text(text = "California")
+                    Text(text = trip.endDestination)
                 }
             }
 

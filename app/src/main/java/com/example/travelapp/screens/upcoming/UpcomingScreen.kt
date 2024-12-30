@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,19 +26,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.data.uitls.Resource
 import com.example.travelapp.R
+import com.example.travelapp.screens.common.TripCardList
 import com.example.travelapp.ui.theme.LightBlue
 
 @Composable
-fun UpcomingScreen(){
+fun UpcomingScreen(
+    viewModel: UpcomingViewModel = hiltViewModel(),
+){
+    val tripsState = viewModel.tripStateFlow.collectAsState()
+
     Scaffold { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)){
             Column(
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
+                Modifier.background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Box(modifier = Modifier
@@ -51,15 +57,25 @@ fun UpcomingScreen(){
                         contentDescription = stringResource(R.string.upcoming_screen_header)
                     )
                     Text(
-                        modifier = Modifier.align(Alignment.BottomStart).padding(24.dp),
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(24.dp),
                         text = stringResource(R.string.my_trips),
                         color = Color.White,
                         fontSize = 30.sp
                     )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                tripsState.value.data?.let{
+                    TripCardList(
+                        trips = it
+                    )
+                }
             }
 
-            if(false){
+            if(tripsState.value.data == null || tripsState.value.data!!.isEmpty()){
                 ShowNoItems(
                     modifier = Modifier
                         .align(Alignment.Center)
