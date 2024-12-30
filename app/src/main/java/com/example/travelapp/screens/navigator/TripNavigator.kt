@@ -54,13 +54,17 @@ import java.io.File
 @Composable
 fun TripNavigator(){
     val navController = rememberNavController()
+    val navigatorViewModel : NavigatorViewModel = hiltViewModel()
 
    ModalNavigationDrawer(
        drawerContent = {
            ModalDrawerSheet(
                modifier = Modifier.fillMaxWidth(0.8f) // Adjust the width of the drawer
            ) {
-               DrawerContent(navController = navController)
+               DrawerContent(
+                   navController = navController,
+                   navigatorViewModel = navigatorViewModel
+               )
            }
        }
    ){
@@ -79,6 +83,7 @@ private fun DrawerContent(
     navigatorViewModel: NavigatorViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+
     ModalDrawerSheet{
         Box(
             modifier = Modifier
