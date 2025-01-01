@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.TripCardList
+import com.example.travelapp.screens.common.TripCardListShimmerEffect
 import com.example.travelapp.ui.theme.LightBlue
 
 @Composable
@@ -73,9 +74,13 @@ fun UpcomingScreen(
                         trips = it
                     )
                 }
+
+                if(tripsState.value is Resource.Loading){
+                    TripCardListShimmerEffect()
+                }
             }
 
-            if(tripsState.value.data == null || tripsState.value.data!!.isEmpty()){
+            if(tripsState.value !is Resource.Loading && (tripsState.value.data == null || tripsState.value.data!!.isEmpty())){
                 ShowNoItems(
                     modifier = Modifier
                         .align(Alignment.Center)
