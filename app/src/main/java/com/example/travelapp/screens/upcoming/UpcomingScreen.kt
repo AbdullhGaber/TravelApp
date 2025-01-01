@@ -12,6 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +44,21 @@ fun UpcomingScreen(
 ){
     val tripsState = viewModel.tripStateFlow.collectAsState()
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { /*TODO*/ },
+                containerColor = LightBlue,
+                shape = CircleShape
+            ){
+               Icon(
+                   imageVector = Icons.Default.Add,
+                   tint = Color.White,
+                   contentDescription = "Add Icon"
+               )
+            }
+        }
+    ){ innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)){
