@@ -21,6 +21,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -42,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.entity.TripEntity
 import com.example.travelapp.R
-import com.example.travelapp.ui.theme.Black100
-import com.example.travelapp.ui.theme.LightBlue
+
+
 
 @Composable
 fun TripCard(
@@ -120,7 +121,7 @@ fun TripCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize()
-                .background(White)
+                .background(MaterialTheme.colorScheme.secondary)
                 .padding(horizontal = 32.dp, vertical = if (isMenuOpened.value) 8.dp else 0.dp)
         ) {
             if (isMenuOpened.value) {
@@ -132,7 +133,7 @@ fun TripCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                .background(Black100)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(15.dp)
                 .clickable {
 
@@ -155,7 +156,6 @@ fun TripDetailsCollapsingMenu(
     Column(
         Modifier
             .fillMaxWidth()
-            .background(White)
             .padding(horizontal = 8.dp, vertical = 8.dp)
     ){
         Row(
@@ -208,7 +208,7 @@ fun TripDetailsCollapsingMenu(
                 ){
                     Icon(
                         painter = painterResource(id = R.drawable.map_ic),
-                        tint = LightBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         contentDescription = stringResource(
                             id = R.string.map_icon
                         )
@@ -285,7 +285,7 @@ fun TripOptionMenu(
 fun UnfilledCircle(
     size: Int = 15,
     borderThickness: Int = 2,
-    borderColor: Color = LightBlue,
+    borderColor: Color = MaterialTheme.colorScheme.primary,
 ) {
     Box(
         modifier = Modifier

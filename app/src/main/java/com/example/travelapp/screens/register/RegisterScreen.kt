@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -46,7 +47,6 @@ import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.ui.theme.LightBlue
 import com.example.travelapp.utils.isEmailValid
 import com.example.travelapp.utils.isPasswordValid
 import com.example.travelapp.utils.isPhoneNoValid
@@ -65,12 +65,12 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.secondary)
     ){
         if(authStateFlow.value is Resource.Loading){
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = LightBlue,
+                color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 4.dp
             )
         }
@@ -147,7 +147,12 @@ private fun RegisterFormHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Text(text = "New\nAccount", fontSize = 26.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = "New\nAccount",
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
+        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -182,6 +187,7 @@ private fun RegisterFormHeader(
                     modifier = Modifier.fillMaxWidth(.4f),
                     textAlign = TextAlign.Center,
                     text = stringResource(R.string.upload_your_profile_picture),
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
         }
@@ -325,12 +331,13 @@ private fun RegisterForm(
                 navigateToSignIn()
             },
             colors = ButtonDefaults.textButtonColors(
-                contentColor = LightBlue
+                contentColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Text(
                 text = "Already have an account? Sign In",
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
     }

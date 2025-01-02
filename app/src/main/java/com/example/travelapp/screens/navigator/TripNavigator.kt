@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +63,7 @@ fun TripNavigator(){
    ModalNavigationDrawer(
        drawerContent = {
            ModalDrawerSheet(
-               modifier = Modifier.fillMaxWidth(0.8f) // Adjust the width of the drawer
+               modifier = Modifier.fillMaxWidth(0.8f),
            ) {
                DrawerContent(
                    navController = navController,
@@ -84,7 +88,7 @@ private fun DrawerContent(
     navController: NavHostController
 ) {
 
-    ModalDrawerSheet{
+    ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.secondary){
         Box(
             modifier = Modifier
                 .fillMaxHeight(0.3f)
@@ -172,6 +176,13 @@ private fun DrawerContent(
 
         NavItems.navItems.forEachIndexed { index, navItem ->
             NavigationDrawerItem(
+                colors = NavigationDrawerItemDefaults.colors(
+                    unselectedContainerColor = Color.Transparent,
+                    unselectedIconColor = LightGray,
+                    selectedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary
+                ),
                 label = {
                     Text(
                         text = stringResource(id = navItem.nameStringRes),
@@ -185,7 +196,7 @@ private fun DrawerContent(
                     navController.navigate(navItem.route)
                 },
                 icon = {
-                    Image(
+                    Icon(
                         painter = painterResource(id = navItem.icon),
                         contentDescription = stringResource(
                             R.string.drawer_item_icon
@@ -204,6 +215,11 @@ private fun DrawerContent(
         )
 
         NavigationDrawerItem(
+            colors = NavigationDrawerItemDefaults.colors(
+                unselectedContainerColor = Color.Transparent,
+                selectedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                selectedTextColor = MaterialTheme.colorScheme.primary
+            ),
             label = {
                 Text(
                     text = stringResource(R.string.others),
@@ -217,6 +233,13 @@ private fun DrawerContent(
         )
 
         NavigationDrawerItem(
+            colors = NavigationDrawerItemDefaults.colors(
+                unselectedContainerColor = Color.Transparent,
+                unselectedIconColor = LightGray,
+                selectedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                selectedIconColor = MaterialTheme.colorScheme.primary,
+                selectedTextColor = MaterialTheme.colorScheme.primary
+            ),
             label = {
                 Text(
                     text = stringResource(id = R.string.sign_out),

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +37,7 @@ import com.example.data.uitls.Resource
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.TripCardList
 import com.example.travelapp.screens.common.TripCardListShimmerEffect
-import com.example.travelapp.ui.theme.LightBlue
+
 
 @Composable
 fun UpcomingScreen(
@@ -45,15 +46,16 @@ fun UpcomingScreen(
     val tripsState = viewModel.tripStateFlow.collectAsState()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.secondary ,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /*TODO*/ },
-                containerColor = LightBlue,
+                containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape
             ){
                Icon(
                    imageVector = Icons.Default.Add,
-                   tint = Color.White,
+                   tint =  MaterialTheme.colorScheme.secondary,
                    contentDescription = "Add Icon"
                )
             }
@@ -63,7 +65,6 @@ fun UpcomingScreen(
             .fillMaxSize()
             .padding(innerPadding)){
             Column(
-                Modifier.background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Box(modifier = Modifier
@@ -130,7 +131,7 @@ fun ShowNoItems(
             text = stringResource(R.string.there_are_no_items_here),
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
-            color = LightBlue
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

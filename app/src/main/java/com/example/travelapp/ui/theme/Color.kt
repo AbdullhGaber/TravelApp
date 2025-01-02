@@ -11,7 +11,11 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val LightBlue = Color(0xFF162C94)
+val LightBlue100 = Color(0x4B162C94)
 val LightGray = Color(0xFF6F716E)
-val Black100 = Color(0xFF272725)
+val Black = Color(0xFF0C0C0C)
+val Black100 = Color(0xFF2C2B30)
+
+val LightGray100 = Color(0xFFFAFAFA)
 
 val ShimmerEffectColor = Color(0xFFC3C3C3)
