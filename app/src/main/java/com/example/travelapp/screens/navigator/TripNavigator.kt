@@ -51,6 +51,8 @@ import com.example.data.uitls.NetworkUtil
 import com.example.travelapp.R
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.navigator.components.NavItems
+import com.example.travelapp.screens.trips.add.AddTripScreen
+import com.example.travelapp.screens.trips.add.AddTripViewModel
 import com.example.travelapp.screens.upcoming.UpcomingScreen
 import com.example.travelapp.ui.theme.LightGray
 import java.io.File
@@ -76,7 +78,18 @@ fun TripNavigator(){
             composable(
                 route = Route.UpComingScreen.route
             ){
-                UpcomingScreen()
+                UpcomingScreen(
+                    navigateToAddTrip = {
+                        navController.navigate(Route.AddTripScreen.route)
+                    }
+                )
+            }
+
+            composable(
+                route = Route.AddTripScreen.route
+            ){
+                val viewModel : AddTripViewModel = hiltViewModel()
+                AddTripScreen(viewModel)
             }
         }
    }
