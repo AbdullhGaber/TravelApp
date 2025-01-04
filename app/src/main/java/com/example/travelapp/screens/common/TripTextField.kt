@@ -1,5 +1,6 @@
 package com.example.travelapp.screens.common
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,8 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,7 +35,8 @@ fun TripTextField(
     isPasswordVisible : Boolean = false,
     onPasswordVisibilityChange: (Boolean) -> Unit = {},
     isError : Boolean = false,
-    errorMessage : String = ""
+    errorMessage : String = "",
+    leadingIcon : @Composable () -> Unit = {}
 ){
     TextField(
         modifier = modifier,
@@ -51,9 +55,12 @@ fun TripTextField(
         ),
         colors = TextFieldDefaults.colors(
             errorIndicatorColor = Color.Red,
-            unfocusedTextColor = Color.Black,
-            focusedTextColor = Color.Black,
-            errorTextColor = Color.Black,
+            unfocusedTextColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedTextColor = MaterialTheme.colorScheme.primaryContainer,
+            errorTextColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
+            cursorColor = MaterialTheme.colorScheme.primaryContainer,
             focusedContainerColor = Color.Transparent,
             errorContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent
@@ -71,7 +78,8 @@ fun TripTextField(
                     }
                 )
             }
-        }
+        },
+        leadingIcon = leadingIcon
     )
 }
 
