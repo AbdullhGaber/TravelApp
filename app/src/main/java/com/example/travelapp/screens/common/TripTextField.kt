@@ -1,5 +1,6 @@
 package com.example.travelapp.screens.common
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,8 @@ fun TripTextField(
     isPasswordVisible : Boolean = false,
     onPasswordVisibilityChange: (Boolean) -> Unit = {},
     isError : Boolean = false,
-    errorMessage : String = ""
+    errorMessage : String = "",
+    leadingIcon : @Composable () -> Unit = {}
 ){
     TextField(
         modifier = modifier,
@@ -76,7 +78,8 @@ fun TripTextField(
                     }
                 )
             }
-        }
+        },
+        leadingIcon = leadingIcon
     )
 }
 
