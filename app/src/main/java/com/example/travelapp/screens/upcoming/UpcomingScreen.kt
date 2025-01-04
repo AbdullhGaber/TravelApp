@@ -42,6 +42,7 @@ import com.example.travelapp.screens.common.TripCardListShimmerEffect
 @Composable
 fun UpcomingScreen(
     viewModel: UpcomingViewModel = hiltViewModel(),
+    navigateToAddTrip : () -> Unit = {}
 ){
     val tripsState = viewModel.tripStateFlow.collectAsState()
 
@@ -49,7 +50,7 @@ fun UpcomingScreen(
         containerColor = MaterialTheme.colorScheme.secondary ,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { navigateToAddTrip() },
                 containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape
             ){

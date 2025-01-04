@@ -78,7 +78,11 @@ fun TripNavigator(){
             composable(
                 route = Route.UpComingScreen.route
             ){
-                UpcomingScreen()
+                UpcomingScreen(
+                    navigateToAddTrip = {
+                        navController.navigate(Route.AddTripScreen.route)
+                    }
+                )
             }
 
             composable(
