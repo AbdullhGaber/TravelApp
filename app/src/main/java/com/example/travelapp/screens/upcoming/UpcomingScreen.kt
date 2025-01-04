@@ -51,7 +51,7 @@ fun UpcomingScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navigateToAddTrip() },
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 shape = CircleShape
             ){
                Icon(

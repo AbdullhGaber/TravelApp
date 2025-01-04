@@ -193,8 +193,8 @@ private fun DrawerContent(
                     unselectedContainerColor = Color.Transparent,
                     unselectedIconColor = LightGray,
                     selectedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 label = {
                     Text(
