@@ -29,4 +29,16 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="add_trip_screen_header">Add Trip Screen Header</string>
+    <string name="let_s_go">Let\'s go</string>
+    <string name="airplane_icon">Airplane Icon</string>
+    <string name="trip_start_point">Trip Start Point</string>
+    <string name="trip_end_point">Trip End Point</string>
+    <string name="trip_name">Trip Name</string>
+    <string name="trip_date">Trip Date</string>
+    <string name="trip_time">Trip Time</string>
+    <string name="trip_type">Trip Type</string>
+    <string name="one_direction_trip">One Direction Trip</string>
+    <string name="round_trip">Round Trip</string>
+    <string name="add">Add</string>
 </resources>

@@ -30,4 +30,16 @@
     <string name="edit">تعديل</string>
     <string name="delete">مسح</string>
     <string name="cancel">إلغاء</string>
+    <string name="add_trip_screen_header">رأس صحفة اضافة الرحلة</string>
+    <string name="let_s_go">هيا بنا</string>
+    <string name="airplane_icon">ايقونة طائرة</string>
+    <string name="trip_start_point">نقطة إنطلاق الرحلة</string>
+    <string name="trip_end_point">نقطة نهاية الرحلة</string>
+    <string name="trip_name">اسم الرحلة</string>
+    <string name="trip_date">تاريخ الرحلة</string>
+    <string name="trip_time">وقت الرحلة</string>
+    <string name="trip_type">نوع الرحلة</string>
+    <string name="one_direction_trip">رحلة ذهاب فقط</string>
+    <string name="round_trip">رحلة ذهاب وعودة</string>
+    <string name="add">Add</string>
 </resources>
