@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,7 +37,6 @@ import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.ui.theme.LightBlue
 import com.example.travelapp.utils.isEmailValid
 import com.example.travelapp.utils.isPasswordValid
 
@@ -50,12 +50,12 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         if (authStateFlow.value is Resource.Loading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = LightBlue,
+                color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 4.dp
             )
         }
@@ -194,6 +194,7 @@ fun LoginFooter(
         Text(
             text = stringResource(R.string.sign_in_with),
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -202,17 +203,17 @@ fun LoginFooter(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ){
-            val social_media_icons = listOf(
+            val socialMediaIcons = listOf(
                 R.drawable.google_plus_ic,
                 R.drawable.facebook_ic,
                 R.drawable.linkedin_ic,
                 R.drawable.twitte__x_ic,
             )
 
-            repeat(social_media_icons.size){
+            repeat(socialMediaIcons.size){
                 Image(
                     modifier = Modifier.padding(horizontal = 4.dp).size(48.dp),
-                    painter = painterResource(id = social_media_icons[it]),
+                    painter = painterResource(id = socialMediaIcons[it]),
                     contentDescription = "Social Media Icon",
                     contentScale = ContentScale.FillBounds
                 )
@@ -223,7 +224,7 @@ fun LoginFooter(
 
         TextButton(
             colors = ButtonDefaults.textButtonColors(
-                contentColor = LightBlue
+                contentColor = MaterialTheme.colorScheme.tertiary
             ),
             onClick = {
                 navigateToSignUp()
