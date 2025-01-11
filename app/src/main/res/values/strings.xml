@@ -42,7 +42,7 @@
     <string name="round_trip">Round Trip</string>
     <string name="add">Add</string>
     <string name="you_have_to_enable_post_notification_permission">You have to enable post notification permission</string>
-    <string name="it_s_time_for_your_trip">It\'s time for your trip: %1$s</string>
+    <string name="it_s_time_for_your_trip">It\'s time for your trip : </string>
     <string name="notification_permission_granted">Notification permission granted!</string>
     <string name="notification_permission_is_required_for_reminders">Notification permission is required for reminders.</string>
     <string name="allow">Allow</string>
