@@ -42,4 +42,11 @@
     <string name="one_direction_trip">رحلة ذهاب فقط</string>
     <string name="round_trip">رحلة ذهاب وعودة</string>
     <string name="add">Add</string>
+    <string name="you_have_to_enable_post_notification_permission">You have to enable post notification permission</string>
+    <string name="it_s_time_for_your_trip">انه وقت رحلتك</string>
+    <string name="notification_permission_granted">تم منح اذن الاشعارات</string>
+    <string name="notification_permission_is_required_for_reminders">اذن الاشعارات مطلوب للتذكير بمواعيد رحلتك</string>
+    <string name="allow">السماح</string>
+    <string name="notification_permission_required">اذن الاشعارات مطلوب</string>
+    <string name="this_app_requires_notification_permissions_to_remind_you_about_your_trips">يتطلب هذا التطبيق اذن الإشعارات لتذكيرك برحلاتك.</string>
 </resources>
