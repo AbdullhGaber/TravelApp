@@ -27,6 +27,7 @@ import com.example.travelapp.R
 @Composable
 fun TripTextField(
     modifier: Modifier = Modifier,
+    readOnly : Boolean = false,
     placeholder : String = "",
     value : String = "",
     onValueChange : (String) -> Unit = {},
@@ -40,6 +41,7 @@ fun TripTextField(
 ){
     TextField(
         modifier = modifier,
+        readOnly = readOnly,
         value = value,
         onValueChange = onValueChange,
         isError = isError,
@@ -54,6 +56,8 @@ fun TripTextField(
             keyboardType = if(isPhoneNumberField) KeyboardType.Phone else KeyboardType.Unspecified
         ),
         colors = TextFieldDefaults.colors(
+            focusedPlaceholderColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primaryContainer,
             errorIndicatorColor = Color.Red,
             unfocusedTextColor = MaterialTheme.colorScheme.primaryContainer,
             focusedTextColor = MaterialTheme.colorScheme.primaryContainer,
