@@ -21,3 +21,11 @@ interface TripRemoteDataSource{
 interface TripOfflineDataSource{
     fun getTrips() : List<TripEntity>?
 }
+
+fun interface TripNotificationScheduler {
+    fun schedule(trip: TripEntity)
+}
+
+fun interface NotificationHandler {
+    fun showTripReminderNotification(tripName: String)
+}
