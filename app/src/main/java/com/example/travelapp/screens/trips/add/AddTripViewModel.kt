@@ -3,12 +3,16 @@ package com.example.travelapp.screens.trips.add
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
+import com.example.domain.entity.TripEntity
+import com.example.domain.use_cases.trip.TripUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class AddTripViewModel @Inject constructor(
-
+    private val mTripUseCases : TripUseCases
 ) : ViewModel() {
     val tripStartPState = mutableStateOf("")
     val tripStartPErrorState = mutableStateOf("")
@@ -19,11 +23,11 @@ class AddTripViewModel @Inject constructor(
     val tripNameState = mutableStateOf("")
     val tripNameErrorState = mutableStateOf("")
 
-    val tripDateState = mutableStateOf("")
-    val tripDateErrorState = mutableStateOf("")
+    var showDatePickerDialog  = mutableStateOf(false)
+    var selectedDate = mutableStateOf<String?>(null)
 
-    val tripTimeState = mutableStateOf("")
-    val tripTimeErrorState = mutableStateOf("")
+    val showTimePickerDialog = mutableStateOf(false)
+    val selectedTime = mutableStateOf<String?>(null)
 
     val roundTripDateState = mutableStateOf("")
     val roundTripDateErrorState = mutableStateOf("")
@@ -33,4 +37,5 @@ class AddTripViewModel @Inject constructor(
 
     val isExpanded = mutableStateOf(false)
     val isRoundTrip = mutableStateOf(false)
+
 }

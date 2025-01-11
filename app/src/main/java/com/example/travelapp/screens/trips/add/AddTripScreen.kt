@@ -1,55 +1,56 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.travelapp.screens.trips.add
 
-import androidx.compose.foundation.Image
+
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Transparent
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.getString
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.domain.entity.TripEntity
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.PrimaryButton
-import com.example.travelapp.screens.common.TripTextField
+import com.example.travelapp.screens.trips.add.components.AddTripForm
+import com.example.travelapp.screens.trips.add.components.ScreenHeaderImage
+import com.example.travelapp.screens.trips.add.components.TripTypeDropDownMenu
+import com.example.travelapp.screens.trips.add.components.TripTypeForm
 import com.example.travelapp.ui.theme.TravelAppTheme
+import com.example.travelapp.utils.hasPostNotificationPermission
+import com.example.travelapp.utils.shouldShowPostNotificationRequestPermissionRationale
+
 
 @Composable
 fun AddTripScreen(
-    viewModel : AddTripViewModel = hiltViewModel()
+    viewModel : AddTripViewModel = hiltViewModel(),
+    navigateUp : () -> Unit = {}
 ){
       val scrollState = rememberScrollState()
 
@@ -90,11 +91,66 @@ fun AddTripScreen(
 
         Spacer(modifier = Modifier.height(40.dp))
 
+        val permissionState = remember { mutableStateOf(false) }
+        val shouldShowRationalDialog = remember { mutableStateOf(false) }
+        val requestPermissionLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                permissionState.value = true
+                Toast.makeText(context, context.getString(R.string.notification_permission_granted), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.notification_permission_is_required_for_reminders),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                if(!shouldShowRationalDialog.value){
+                    val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .apply { data = Uri.fromParts("package", context.packageName, null) }
+
+                    context.startActivity(settingsIntent)
+                }
+            }
+        }
+
+        LaunchedEffect(Unit){
+            if(hasPostNotificationPermission(context)){
+                permissionState.value = true
+            }else{
+                if(shouldShowPostNotificationRequestPermissionRationale(context)){
+                    shouldShowRationalDialog.value = true
+                }else{
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+
+        if(shouldShowRationalDialog.value){
+            ShowPermissionRationaleDialog(
+                onRequestPermission = {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    shouldShowRationalDialog.value = false
+                },
+                onDismissRequest = {
+                    shouldShowRationalDialog.value = false
+                    navigateUp()
+                }
+            )
+
+        }
+
         PrimaryButton(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            onClick = {},
+            onClick = {
+                if(!permissionState.value) {
+                    shouldShowRationalDialog.value = true
+                    return@PrimaryButton
+                }
+            },
             text = stringResource(id = R.string.add)
         )
 
@@ -103,292 +159,48 @@ fun AddTripScreen(
 }
 
 @Composable
-private fun TripTypeForm(
-    viewModel: AddTripViewModel
-){
-    Column{
-        TripTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            placeholder = stringResource(R.string.trip_date),
-            value = viewModel.roundTripDateState.value,
-            onValueChange = {
-                viewModel.roundTripDateErrorState.value = ""
-                viewModel.roundTripDateState.value = it
-            },
-            isError = viewModel.roundTripDateErrorState.value.isNotEmpty(),
-            errorMessage = viewModel.roundTripDateErrorState.value,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.calendar_month_ic),
-                    contentDescription = stringResource(
-                        R.string.airplane_icon
-                    ),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TripTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            placeholder = stringResource(R.string.trip_time),
-            value = viewModel.roundTripTimeState.value,
-            onValueChange = {
-                viewModel.roundTripTimeErrorState.value = ""
-                viewModel.roundTripTimeState.value = it
-            },
-            isError = viewModel.roundTripTimeErrorState.value.isNotEmpty(),
-            errorMessage = viewModel.roundTripTimeErrorState.value,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.time_ic),
-                    contentDescription = stringResource(
-                        R.string.airplane_icon
-                    ),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        )
-    }
-}
-
-@Composable
-private fun AddTripForm(
-    viewModel : AddTripViewModel
-) {
-    TripTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        placeholder = stringResource(R.string.trip_start_point),
-        value = viewModel.tripStartPState.value,
-        onValueChange = {
-            viewModel.tripStartPErrorState.value = ""
-            viewModel.tripStartPState.value = it
-        },
-        isError = viewModel.tripStartPErrorState.value.isNotEmpty(),
-        errorMessage = viewModel.tripStartPErrorState.value,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.airplane_ic),
-                contentDescription = stringResource(
-                    R.string.airplane_icon
-                ),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    TripTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        placeholder = stringResource(R.string.trip_end_point),
-        value = viewModel.tripEndPState.value,
-        onValueChange = {
-            viewModel.tripEndPErrorState.value = ""
-            viewModel.tripEndPState.value = it
-        },
-        isError = viewModel.tripEndPErrorState.value.isNotEmpty(),
-        errorMessage = viewModel.tripEndPErrorState.value,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.airplane_ic),
-                contentDescription = stringResource(
-                    R.string.airplane_icon
-                ),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    TripTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        placeholder = stringResource(R.string.trip_name),
-        value = viewModel.tripNameState.value,
-        onValueChange = {
-            viewModel.tripNameErrorState.value = ""
-            viewModel.tripNameState.value = it
-        },
-        isError = viewModel.tripNameErrorState.value.isNotEmpty(),
-        errorMessage = viewModel.tripNameErrorState.value,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.edit_ic),
-                contentDescription = stringResource(
-                    R.string.airplane_icon
-                ),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    TripTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        placeholder = stringResource(R.string.trip_date),
-        value = viewModel.tripDateState.value,
-        onValueChange = {
-            viewModel.tripDateErrorState.value = ""
-            viewModel.tripDateState.value = it
-        },
-        isError =  viewModel.tripDateErrorState.value.isNotEmpty(),
-        errorMessage = viewModel.tripDateErrorState.value,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.calendar_month_ic),
-                contentDescription = stringResource(
-                    R.string.airplane_icon
-                ),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    TripTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        placeholder = stringResource(R.string.trip_time),
-        value = viewModel.tripTimeState.value,
-        onValueChange = {
-            viewModel.tripTimeErrorState.value = ""
-            viewModel.tripTimeState.value = it
-        },
-        isError = viewModel.tripTimeErrorState.value.isNotEmpty(),
-        errorMessage = viewModel.tripTimeErrorState.value,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.time_ic),
-                contentDescription = stringResource(
-                    R.string.airplane_icon
-                ),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Text(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        text = stringResource(R.string.trip_type),
-        color = MaterialTheme.colorScheme.tertiary
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun TripTypeDropDownMenu(
-    modifier: Modifier = Modifier,
-    isExpanded : Boolean,
-    onItemClick : (String) -> Unit,
-    onExpandedChange : (Boolean) -> Unit,
+fun ShowPermissionRationaleDialog(
+    onRequestPermission: () -> Unit,
     onDismissRequest : () -> Unit
 ) {
-    val tripTypes = listOf(
-        stringResource(id = R.string.one_direction_trip),
-        stringResource(id = R.string.round_trip)
-    )
-
-
-    val selectedItem = remember { mutableStateOf(tripTypes[0]) }
-
-    ExposedDropdownMenuBox(
-        modifier = Modifier
-            .padding(horizontal = 32.dp)
-            .border(width = 1.dp, color = MaterialTheme.colorScheme.tertiary),
-        expanded = isExpanded,
-        onExpandedChange = onExpandedChange
-    ){
-        TextField(
-            value = selectedItem.value,
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Transparent,
-                unfocusedIndicatorColor = Transparent,
-                unfocusedContainerColor = Transparent,
-                focusedContainerColor = Transparent
-            ),
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            },
-            modifier = Modifier
-                .menuAnchor()
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-        )
-
-        ExposedDropdownMenu(
-            modifier = modifier.background(MaterialTheme.colorScheme.secondary),
-            expanded = isExpanded,
-            onDismissRequest = onDismissRequest
-        ) {
-            tripTypes.forEach { tripType ->
-                DropdownMenuItem(
-                    colors = MenuDefaults.itemColors(
-                      textColor = MaterialTheme.colorScheme.tertiary,
-                    ),
-                    text = { Text(tripType) },
-                    onClick = {
-                        selectedItem.value = tripType
-                        onItemClick(tripType)
-                    }
-                )
+    AlertDialog(
+        onDismissRequest = {onDismissRequest()},
+        title = {
+            Text(stringResource(R.string.notification_permission_required))
+        },
+        text = {
+            Text(stringResource(R.string.this_app_requires_notification_permissions_to_remind_you_about_your_trips))
+        },
+        confirmButton = {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                onClick = {
+                    onRequestPermission()
+                }
+            ) {
+                Text(stringResource(R.string.allow))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                onClick = { onDismissRequest() }
+            ) {
+                Text(stringResource(R.string.cancel))
             }
         }
-    }
+    )
 }
 
-
-
-@Composable
-private fun ScreenHeaderImage() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    ) {
-        Image(
-            modifier = Modifier.matchParentSize(),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(id = R.drawable.add_trip_header),
-            contentDescription = stringResource(R.string.add_trip_screen_header)
-        )
-
-        Text(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp),
-            text = stringResource(R.string.let_s_go),
-            color = Color.White,
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
 
 @Composable
 @Preview
 fun PreviewAddTripScreen(){
     TravelAppTheme {
-        AddTripScreen()
+       AddTripScreen()
     }
 }
