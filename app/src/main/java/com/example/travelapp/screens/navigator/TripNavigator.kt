@@ -89,7 +89,12 @@ fun TripNavigator(){
                 route = Route.AddTripScreen.route
             ){
                 val viewModel : AddTripViewModel = hiltViewModel()
-                AddTripScreen(viewModel)
+                AddTripScreen(
+                    viewModel,
+                    navigateUp = {
+                        navController.navigateUp()
+                    }
+                )
             }
         }
    }
