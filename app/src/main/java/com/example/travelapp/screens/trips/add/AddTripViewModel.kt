@@ -29,11 +29,11 @@ class AddTripViewModel @Inject constructor(
     val showTimePickerDialog = mutableStateOf(false)
     val selectedTime = mutableStateOf<String?>(null)
 
-    val roundTripDateState = mutableStateOf("")
-    val roundTripDateErrorState = mutableStateOf("")
+    var roundTripShowDatePickerDialog  = mutableStateOf(false)
+    var roundTripSelectedDate = mutableStateOf<String?>(null)
 
-    val roundTripTimeState = mutableStateOf("")
-    val roundTripTimeErrorState = mutableStateOf("")
+    val roundTripShowTimePickerDialog = mutableStateOf(false)
+    val roundTripSelectedTime = mutableStateOf<String?>(null)
 
     val isExpanded = mutableStateOf(false)
     val isRoundTrip = mutableStateOf(false)
