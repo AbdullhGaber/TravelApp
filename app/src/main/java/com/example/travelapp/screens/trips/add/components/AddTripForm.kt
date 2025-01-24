@@ -13,10 +13,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.data.mapper.localDateToMillis
+import com.example.data.mapper.localTimeToText
+import com.example.data.mapper.textToLocalDate
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.TripTextField
 import com.example.travelapp.screens.trips.add.AddTripViewModel
-import java.time.format.DateTimeFormatter
+import com.example.travelapp.utils.isEndPointValid
+import com.example.travelapp.utils.isStartPointValid
+import com.example.travelapp.utils.isTripEndPointDateValid
+import com.example.travelapp.utils.isTripEndTimeValid
+import com.example.travelapp.utils.isTripNameValid
+import com.example.travelapp.utils.isTripStartPointDateValid
+import com.example.travelapp.utils.isTripStartTimeValid
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 @Composable
 fun AddTripForm(
@@ -31,6 +43,7 @@ fun AddTripForm(
         onValueChange = {
             viewModel.tripStartPErrorState.value = ""
             viewModel.tripStartPState.value = it
+            isStartPointValid(it,viewModel.tripStartPErrorState)
         },
         isError = viewModel.tripStartPErrorState.value.isNotEmpty(),
         errorMessage = viewModel.tripStartPErrorState.value,
@@ -56,6 +69,7 @@ fun AddTripForm(
         onValueChange = {
             viewModel.tripEndPErrorState.value = ""
             viewModel.tripEndPState.value = it
+            isEndPointValid(it,viewModel.tripEndPErrorState)
         },
         isError = viewModel.tripEndPErrorState.value.isNotEmpty(),
         errorMessage = viewModel.tripEndPErrorState.value,
@@ -81,6 +95,7 @@ fun AddTripForm(
         onValueChange = {
             viewModel.tripNameErrorState.value = ""
             viewModel.tripNameState.value = it
+            isTripNameValid(it,viewModel.tripNameErrorState)
         },
         isError = viewModel.tripNameErrorState.value.isNotEmpty(),
         errorMessage = viewModel.tripNameErrorState.value,
@@ -98,34 +113,101 @@ fun AddTripForm(
     Spacer(modifier = Modifier.height(16.dp))
 
     PickDateField(
-        selectedDate = viewModel.selectedDate.value,
-        showDatePickerDialog = viewModel.showDatePickerDialog.value,
+        selectedDate = viewModel.selectedSingleTripDate.value,
+        showDatePickerDialog = viewModel.showSingleTripDatePickerDialog.value,
         onClick = {
-            viewModel.showDatePickerDialog.value = true
+            viewModel.showSingleTripDatePickerDialog.value = true
         },
-        onDateSelected = {date ->
-            viewModel.selectedDate.value = "${date.dayOfMonth}-${date.monthValue}-${date.year}"
-            viewModel.showDatePickerDialog.value = false
+        onDateSelected = {date, selectedMillis ->
+            viewModel.selectedSingleTripDate.value = "${date.year}-${date.monthValue}-${date.dayOfMonth}"
+            if(viewModel.roundTripSelectedDate.value != null){
+                val secondTripLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
+                val secondDateMillis = localDateToMillis(secondTripLocalDate)
+                isTripEndPointDateValid(
+                    firstTripDateMillis = selectedMillis,
+                    secondTripDateMillis = secondDateMillis,
+                    viewModel.roundTripSelectedDateErrorState
+                )
+            }
+
+            if(viewModel.selectedSingleTripTime.value != null){
+                val localDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
+                val dateMillis = localDateToMillis(localDate)
+                isTripStartTimeValid(
+                    time = viewModel.selectedSingleTripTime.value,
+                    selectedDateMillis = dateMillis,
+                    timeErrorState = viewModel.selectedSingleTimeErrorState
+                )
+            }
+
+            if(viewModel.roundTripSelectedTime.value != null){
+                val startLocalDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
+                val startDateMillis = localDateToMillis(startLocalDate)
+
+                val endLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
+                val endDateMillis = localDateToMillis(endLocalDate)
+
+                isTripEndTimeValid(
+                    endTime =viewModel.roundTripSelectedTime.value,
+                    startTime = viewModel.selectedSingleTripTime.value,
+                    selectedStartDateMillis = startDateMillis,
+                    selectedEndDateMillis = endDateMillis,
+                    timeErrorState = viewModel.roundTripSelectedTimeErrorState
+                )
+            }
+
+            isTripStartPointDateValid(
+                selectedMillis = selectedMillis,
+                selectedDateErrorState = viewModel.selectedSingleDateErrorState
+            )
+
+            viewModel.selectedSingleTripDate.value = "${date.year}-${date.monthValue}-${date.dayOfMonth}"
+            viewModel.showSingleTripDatePickerDialog.value = false
         },
         onDismissRequest = {
-            viewModel.showDatePickerDialog.value = false
-        }
+            if(viewModel.selectedSingleTripDate.value == null){
+                viewModel.selectedSingleDateErrorState.value = "Date field is required!"
+            }
+            viewModel.showSingleTripDatePickerDialog.value = false
+        },
+        error = viewModel.selectedSingleDateErrorState.value
     )
 
     Spacer(modifier = Modifier.height(16.dp))
 
     PickTimeField(
-        selectedTime = viewModel.selectedTime.value,
-        showTimePickerDialog = viewModel.showTimePickerDialog.value,
+        selectedTime = viewModel.selectedSingleTripTime.value,
+        showTimePickerDialog = viewModel.showSingleTripTimePickerDialog.value,
         onClick = {
-            viewModel.showTimePickerDialog.value = true
+            viewModel.showSingleTripTimePickerDialog.value = true
         },
+        error = viewModel.selectedSingleTimeErrorState.value,
         onTimeSelected = {time ->
-            viewModel.selectedTime.value = time.format(DateTimeFormatter.ofPattern("hh:mm a"))
-            viewModel.showTimePickerDialog.value = false
+            viewModel.selectedSingleTripTime.value = localTimeToText(time)
+            if(viewModel.roundTripSelectedTime.value != null){
+                val firstTripLocalDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
+                val firstDateMillis = localDateToMillis(firstTripLocalDate)
+
+                val secondTripLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
+                val secondDateMillis = localDateToMillis(secondTripLocalDate)
+                isTripEndTimeValid(
+                    endTime = viewModel.roundTripSelectedTime.value,
+                    startTime = viewModel.selectedSingleTripTime.value,
+                    selectedStartDateMillis = firstDateMillis,
+                    selectedEndDateMillis = secondDateMillis,
+                    timeErrorState = viewModel.roundTripSelectedTimeErrorState
+                )
+            }
+            val localDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
+            val dateMillis = localDateToMillis(localDate)
+            isTripStartTimeValid(viewModel.selectedSingleTripTime.value,dateMillis,viewModel.selectedSingleTimeErrorState)
+            viewModel.showSingleTripTimePickerDialog.value = false
         },
         onDismissRequest = {
-            viewModel.showTimePickerDialog.value = false
+            if(viewModel.selectedSingleTripTime.value == null){
+                isTripStartTimeValid(viewModel.selectedSingleTripTime.value,0L,viewModel.selectedSingleTimeErrorState)
+            }
+            viewModel.showSingleTripTimePickerDialog.value = false
         }
     )
 

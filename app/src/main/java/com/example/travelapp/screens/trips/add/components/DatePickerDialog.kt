@@ -12,12 +12,13 @@ import androidx.compose.ui.window.DialogProperties
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
     onDismissRequest: () -> Unit,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate,Long) -> Unit
 ) {
     val datePickerState = rememberDatePickerState()
 
@@ -75,7 +76,7 @@ fun DatePickerDialog(
                                     val selectedDate = Instant.ofEpochMilli(selectedMillis)
                                         .atZone(ZoneId.systemDefault())
                                         .toLocalDate()
-                                    onDateSelected(selectedDate)
+                                    onDateSelected(selectedDate,selectedMillis)
                                 }
                                 onDismissRequest()
                             },

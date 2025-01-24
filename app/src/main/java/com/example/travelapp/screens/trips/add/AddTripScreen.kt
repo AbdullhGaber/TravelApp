@@ -145,6 +145,7 @@ fun AddTripScreen(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
+            enabled = viewModel.isNoErrors(),
             onClick = {
                 if(!permissionState.value) {
                     shouldShowRationalDialog.value = true

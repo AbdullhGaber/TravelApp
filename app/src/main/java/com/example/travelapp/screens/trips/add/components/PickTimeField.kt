@@ -15,10 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.travelapp.R
 import java.time.LocalTime
 
@@ -26,6 +28,7 @@ import java.time.LocalTime
 fun PickTimeField(
     selectedTime : String?,
     showTimePickerDialog: Boolean,
+    error : String,
     onClick : () -> Unit,
     onTimeSelected : (LocalTime) -> Unit,
     onDismissRequest : () -> Unit
@@ -65,6 +68,16 @@ fun PickTimeField(
         HorizontalDivider(
             color = MaterialTheme.colorScheme.primaryContainer
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if(error.isNotEmpty()){
+            Text(
+                text = error,
+                color = Red,
+                fontSize = 12.sp
+            )
+        }
     }
 
     Spacer(modifier = Modifier.height(16.dp))
