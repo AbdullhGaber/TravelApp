@@ -2,70 +2,103 @@ package com.example.travelapp.screens.trips.add.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.travelapp.R
-import com.example.travelapp.screens.common.TripTextField
+import com.example.data.mapper.localDateToMillis
+import com.example.data.mapper.localTimeToText
+import com.example.data.mapper.textToLocalDate
 import com.example.travelapp.screens.trips.add.AddTripViewModel
+import com.example.travelapp.utils.isTripEndPointDateValid
+import com.example.travelapp.utils.isTripEndTimeValid
 
 @Composable
 fun TripTypeForm(
     viewModel: AddTripViewModel
 ){
     Column{
-        TripTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            placeholder = stringResource(R.string.trip_date),
-            value = viewModel.roundTripDateState.value,
-            onValueChange = {
-                viewModel.roundTripDateErrorState.value = ""
-                viewModel.roundTripDateState.value = it
+        PickDateField(
+            selectedDate = viewModel.roundTripSelectedDate.value,
+            showDatePickerDialog = viewModel.roundTripShowDatePickerDialog.value,
+            onClick = {
+                viewModel.roundTripShowDatePickerDialog.value = true
             },
-            isError = viewModel.roundTripDateErrorState.value.isNotEmpty(),
-            errorMessage = viewModel.roundTripDateErrorState.value,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.calendar_month_ic),
-                    contentDescription = stringResource(
-                        R.string.airplane_icon
-                    ),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            onDateSelected = {date,selectedMillis ->
+                if(viewModel.selectedSingleTripDate.value == null){
+                    viewModel.roundTripSelectedDateErrorState.value = "Select trip start point date first"
+                }else{
+                    viewModel.roundTripSelectedDate.value = "${date.year}-${date.monthValue}-${date.dayOfMonth}"
+
+                    val startLocalDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
+                    val startDateMillis = localDateToMillis(startLocalDate)
+
+                    val endLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
+                    val endDateMillis = localDateToMillis(endLocalDate)
+
+                    isTripEndPointDateValid(
+                        firstTripDateMillis = startDateMillis,
+                        secondTripDateMillis = selectedMillis,
+                        viewModel.roundTripSelectedDateErrorState
+                    )
+
+                    if(viewModel.roundTripSelectedTime.value != null){
+                        isTripEndTimeValid(
+                            endTime =viewModel.roundTripSelectedTime.value,
+                            startTime = viewModel.selectedSingleTripTime.value,
+                            selectedStartDateMillis = startDateMillis,
+                            selectedEndDateMillis = endDateMillis,
+                            timeErrorState = viewModel.roundTripSelectedTimeErrorState
+                        )
+                    }
+                }
+                viewModel.roundTripShowDatePickerDialog.value = false
+            },
+            onDismissRequest = {
+                if(viewModel.roundTripSelectedDate.value == null){
+                    viewModel.roundTripSelectedDateErrorState.value = "Round date field is required!"
+                }
+                viewModel.roundTripShowDatePickerDialog.value = false
+            },
+            error = viewModel.roundTripSelectedDateErrorState.value
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        TripTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            placeholder = stringResource(R.string.trip_time),
-            value = viewModel.roundTripTimeState.value,
-            onValueChange = {
-                viewModel.roundTripTimeErrorState.value = ""
-                viewModel.roundTripTimeState.value = it
+        PickTimeField(
+            selectedTime = viewModel.roundTripSelectedTime.value,
+            showTimePickerDialog = viewModel.roundTripShowTimePickerDialog.value,
+            onClick = {
+                viewModel.roundTripShowTimePickerDialog.value = true
             },
-            isError = viewModel.roundTripTimeErrorState.value.isNotEmpty(),
-            errorMessage = viewModel.roundTripTimeErrorState.value,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.time_ic),
-                    contentDescription = stringResource(
-                        R.string.airplane_icon
-                    ),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+            error = viewModel.roundTripSelectedTimeErrorState.value,
+            onTimeSelected = {time ->
+                viewModel.roundTripSelectedTime.value = localTimeToText(time)
+                val secondsTripSelectedDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
+                val secondDateMillis = localDateToMillis(secondsTripSelectedDate)
+
+                val firstTripDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
+                val firstDateMillis = localDateToMillis(firstTripDate)
+                isTripEndTimeValid(
+                    endTime = viewModel.roundTripSelectedTime.value,
+                    startTime = viewModel.selectedSingleTripTime.value,
+                    selectedStartDateMillis = firstDateMillis,
+                    selectedEndDateMillis = secondDateMillis,
+                    timeErrorState = viewModel.roundTripSelectedTimeErrorState
                 )
+                viewModel.roundTripShowTimePickerDialog.value = false
+            },
+            onDismissRequest = {
+                if(viewModel.roundTripSelectedTime.value == null){
+                    isTripEndTimeValid(
+                        endTime = viewModel.roundTripSelectedTime.value,
+                        startTime = viewModel.selectedSingleTripTime.value,
+                        selectedStartDateMillis = 0L,
+                        selectedEndDateMillis = 0L,
+                        timeErrorState = viewModel.roundTripSelectedTimeErrorState
+                    )
+                }
+                viewModel.roundTripShowTimePickerDialog.value = false
             }
         )
     }
