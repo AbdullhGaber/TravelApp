@@ -1,7 +1,7 @@
 package com.example.domain.entity
 
 data class TripEntity(
-    val id : String? = null,
+    var id : String? = null,
     val notes : List<String> = emptyList(),
     val status : String = "",
     val name : String = "Trip",
@@ -19,5 +19,8 @@ data class TripEntity(
         const val UPCOMING = "Upcoming"
         const val DONE = "Done"
         const val CANCELLED = "Cancelled"
+
+        const val ONE_DIRECTION_TRIP = "One Direction Trip"
+        const val ROUND_DIRECTION_TRIP = "Round Direction Trip"
     }
 }
