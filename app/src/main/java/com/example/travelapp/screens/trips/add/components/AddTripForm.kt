@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,9 +27,7 @@ import com.example.travelapp.utils.isTripEndTimeValid
 import com.example.travelapp.utils.isTripNameValid
 import com.example.travelapp.utils.isTripStartPointDateValid
 import com.example.travelapp.utils.isTripStartTimeValid
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
+
 
 @Composable
 fun AddTripForm(
@@ -112,6 +111,8 @@ fun AddTripForm(
 
     Spacer(modifier = Modifier.height(16.dp))
 
+    val context = LocalContext.current
+
     PickDateField(
         selectedDate = viewModel.selectedSingleTripDate.value,
         showDatePickerDialog = viewModel.showSingleTripDatePickerDialog.value,
@@ -166,7 +167,8 @@ fun AddTripForm(
         },
         onDismissRequest = {
             if(viewModel.selectedSingleTripDate.value == null){
-                viewModel.selectedSingleDateErrorState.value = "Date field is required!"
+                viewModel.selectedSingleDateErrorState.value =
+                    context.getString(R.string.date_field_is_required)
             }
             viewModel.showSingleTripDatePickerDialog.value = false
         },

@@ -58,7 +58,7 @@ fun PickDateField(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = selectedDate ?: "Pick a Date",
+                text = selectedDate ?: stringResource(R.string.pick_a_date),
                 color = MaterialTheme.colorScheme.primaryContainer
             )
         }

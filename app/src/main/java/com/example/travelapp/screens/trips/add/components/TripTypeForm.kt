@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.localTimeToText
 import com.example.data.mapper.textToLocalDate
+import com.example.travelapp.R
 import com.example.travelapp.screens.trips.add.AddTripViewModel
 import com.example.travelapp.utils.isTripEndPointDateValid
 import com.example.travelapp.utils.isTripEndTimeValid
@@ -17,6 +19,7 @@ import com.example.travelapp.utils.isTripEndTimeValid
 fun TripTypeForm(
     viewModel: AddTripViewModel
 ){
+    val context = LocalContext.current
     Column{
         PickDateField(
             selectedDate = viewModel.roundTripSelectedDate.value,
@@ -26,7 +29,8 @@ fun TripTypeForm(
             },
             onDateSelected = {date,selectedMillis ->
                 if(viewModel.selectedSingleTripDate.value == null){
-                    viewModel.roundTripSelectedDateErrorState.value = "Select trip start point date first"
+                    viewModel.roundTripSelectedDateErrorState.value =
+                        context.getString(R.string.select_trip_start_point_date_first)
                 }else{
                     viewModel.roundTripSelectedDate.value = "${date.year}-${date.monthValue}-${date.dayOfMonth}"
 
@@ -56,7 +60,8 @@ fun TripTypeForm(
             },
             onDismissRequest = {
                 if(viewModel.roundTripSelectedDate.value == null){
-                    viewModel.roundTripSelectedDateErrorState.value = "Round date field is required!"
+                    viewModel.roundTripSelectedDateErrorState.value =
+                        context.getString(R.string.round_trip_date_field_is_required)
                 }
                 viewModel.roundTripShowDatePickerDialog.value = false
             },

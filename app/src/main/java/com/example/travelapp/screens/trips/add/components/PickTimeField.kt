@@ -58,7 +58,7 @@ fun PickTimeField(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = selectedTime ?: "Pick a Time",
+                text = selectedTime ?: stringResource(R.string.pick_a_time),
                 color = MaterialTheme.colorScheme.primaryContainer
             )
         }

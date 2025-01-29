@@ -1,13 +1,20 @@
 package com.example.travelapp.utils
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.millisToLocalDate
 import com.example.data.mapper.textToLocalTime
+import com.example.data.uitls.DataUtil
+import com.example.data.uitls.mContext
+import com.example.travelapp.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
+
 
 fun areAddTripFieldsValid(
     tripName : String,
@@ -49,7 +56,7 @@ fun isTripNameValid(
     tripNameErrorState : MutableState<String>
 ) : Boolean{
     if(tripName.isEmpty()){
-        tripNameErrorState.value = "Start Point Field is Required"
+        tripNameErrorState.value = mContext.getString(R.string.trip_name_field_is_required)
         return false
     }
     return true
@@ -57,7 +64,7 @@ fun isTripNameValid(
 
 fun isStartPointValid(startPoint: String,startPointErrorState:MutableState<String>) : Boolean{
      if(startPoint.isEmpty()){
-         startPointErrorState.value = "Start Point Field is Required"
+         startPointErrorState.value = mContext.getString(R.string.start_point_field_is_required)
          return false
     }
     return true
@@ -65,7 +72,7 @@ fun isStartPointValid(startPoint: String,startPointErrorState:MutableState<Strin
 
 fun isEndPointValid(endPoint: String,endPointErrorState:MutableState<String>) : Boolean{
     if(endPoint.isEmpty()){
-        endPointErrorState.value = "End Point Field is Required"
+        endPointErrorState.value = mContext.getString(R.string.end_point_field_is_required)
         return false
     }
     return true
@@ -77,7 +84,7 @@ fun isTripStartTimeValid(
     timeErrorState: MutableState<String>
 ) : Boolean{
     if(time == null){
-        timeErrorState.value = "Time Field is required"
+        timeErrorState.value = mContext.getString(R.string.time_field_is_required)
         return false
     }
 
@@ -86,11 +93,10 @@ fun isTripStartTimeValid(
     val localTime = LocalTime.parse(time,formatter)
 
     if(selectedDateMillis == currentDateMillis){
-        Log.e("Time validation" , "selectedDateMillis == currentDateMillis is true")
          val currentTime = LocalTime.now()
          if(localTime.isBefore(currentTime)){
-             Log.e("Time validation" , "localTime.isBefore(currentTime) is true")
-             timeErrorState.value = "You can't select time in the past to your today's trip"
+             timeErrorState.value =
+                 mContext.getString(R.string.you_can_t_select_time_in_the_past_to_your_today_s_trip)
              return false
          }
     }
@@ -108,18 +114,19 @@ fun isTripEndTimeValid(
 ) : Boolean{
 
     if(endTime == null){
-        timeErrorState.value = "Time Field is required"
+        timeErrorState.value = mContext.getString(R.string.time_field_is_required)
         return false
     }
 
     if(startTime == null){
-        timeErrorState.value = "Trip start time can't be empty"
+        timeErrorState.value = mContext.getString(R.string.trip_start_time_can_t_be_empty)
         return false
     }
 
     if(selectedStartDateMillis == selectedEndDateMillis){
         if(textToLocalTime(endTime).isBefore(textToLocalTime(startTime))){
-            timeErrorState.value = "Trip end time can't be before start time"
+            timeErrorState.value =
+                mContext.getString(R.string.trip_end_time_can_t_be_before_start_time)
             return false
         }
     }
@@ -149,7 +156,8 @@ private fun isSelectedDateAfterCurrent(
     val currentDate = LocalDate.now()
 
     if (selectedDate.isBefore(currentDate)){
-        selectedDateErrorState.value = "Selected date cannot be before today!"
+        selectedDateErrorState.value =
+            mContext.getString(R.string.selected_date_cannot_be_before_today)
         return false
     }
 
@@ -166,7 +174,8 @@ private fun isFirstTripDateAfterSecondTripDate(
     val secondDate = millisToLocalDate(secondTripDateMillis)
 
     if (secondDate.isBefore(firstDate)){
-        selectedDateErrorState.value = "Selected second trip date cannot be before your first trip date!"
+        selectedDateErrorState.value =
+            mContext.getString(R.string.selected_second_trip_date_cannot_be_before_your_first_trip_date)
         return false
     }
     selectedDateErrorState.value = ""

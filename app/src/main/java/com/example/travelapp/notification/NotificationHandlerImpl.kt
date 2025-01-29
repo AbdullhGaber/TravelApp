@@ -13,16 +13,14 @@ import android.media.RingtoneManager
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.data.uitls.mContext
 import com.example.domain.repositories.trip.NotificationHandler
 import com.example.travelapp.MainActivity
 import com.example.travelapp.R
 import com.example.travelapp.utils.hasPostNotificationPermission
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
-class NotificationHandlerImpl @Inject constructor(
-    @ApplicationContext private val mContext : Context
-): NotificationHandler {
+
+class NotificationHandlerImpl : NotificationHandler {
     @SuppressLint("MissingPermission")
     override fun showTripReminderNotification(tripName: String) {
         val intent = Intent(mContext,MainActivity::class.java)
@@ -40,7 +38,7 @@ class NotificationHandlerImpl @Inject constructor(
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val notification = notificationBuilder
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Trip Reminder")
+            .setContentTitle(mContext.getString(R.string.trip_reminder))
             .setContentText(mContext.getString(R.string.it_s_time_for_your_trip) + tripName)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
@@ -56,7 +54,7 @@ class NotificationHandlerImpl @Inject constructor(
         }
     }
 
-    fun createNotificationChannel(context: Context) {
+    private fun createNotificationChannel(context: Context) {
         val channelId = "trip_reminder_channel"
         val channelName = "Trip Reminders"
         val channelDescription = "Notifications to remind you about your trips"

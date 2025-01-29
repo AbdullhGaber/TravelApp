@@ -7,12 +7,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.travelapp.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Date
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,10 +26,10 @@ fun DatePickerDialog(
 
     Dialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false) // Allows custom width
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Box(
-            modifier = Modifier.fillMaxSize() ,// Add padding to avoid edge clipping
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Surface(
@@ -66,7 +68,7 @@ fun DatePickerDialog(
                                 contentColor = MaterialTheme.colorScheme.tertiary
                             ),
                         ) {
-                            Text("Cancel")
+                            Text(stringResource(R.string.cancel))
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         TextButton(
@@ -84,7 +86,7 @@ fun DatePickerDialog(
                                 contentColor = MaterialTheme.colorScheme.tertiary
                             )
                         ) {
-                            Text("OK")
+                            Text(stringResource(R.string.ok))
                         }
                     }
                 }

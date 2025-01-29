@@ -1,7 +1,11 @@
 package com.example.travelapp.utils
 
+
 import android.util.Patterns
 import androidx.compose.runtime.MutableState
+import com.example.data.uitls.mContext
+import com.example.travelapp.R
+
 
 fun areRegisterFieldsValid(
     email : String,
@@ -35,12 +39,12 @@ fun isRePasswordValid(
     password: String,
 ): Boolean {
     if (rePassword.isEmpty()) {
-        rePasswordError.value = "Re-type password field is required"
+        rePasswordError.value = mContext.getString(R.string.re_type_password_field_is_required)
         return false
     }
 
     if (rePassword != password) {
-        rePasswordError.value = "Passwords entered are not compatible"
+        rePasswordError.value = mContext.getString(R.string.passwords_entered_are_not_compatible)
         return false
     }
 
@@ -52,12 +56,12 @@ fun isPasswordValid(
     passwordError: MutableState<String>,
 ): Boolean {
     if (password.isEmpty()) {
-        passwordError.value = "Password field is required"
+        passwordError.value = mContext.getString(R.string.password_field_is_required)
         return false
     }
 
     if (password.length < 6) {
-        passwordError.value = "Password field must be min of 6 characters"
+        passwordError.value = mContext.getString(R.string.password_field_must_be_min_of_6_characters)
         return false
     }
 
@@ -69,7 +73,7 @@ fun isPhoneNoValid(
     phoneNoError: MutableState<String>,
 ): Boolean {
     if (phoneNo.isEmpty()) {
-        phoneNoError.value = "Phone field is required"
+        phoneNoError.value = mContext.getString(R.string.phone_field_is_required)
         return false
     }
     return true
@@ -80,7 +84,7 @@ fun isUsernameValid(
     userNameError: MutableState<String>,
 ): Boolean {
     if (userName.isEmpty()) {
-        userNameError.value = "Username field is required"
+        userNameError.value = mContext.getString(R.string.username_field_is_required)
         return false
     }
     return true
@@ -91,12 +95,12 @@ fun isEmailValid(
     emailError: MutableState<String>,
 ): Boolean {
     if (email.isEmpty()) {
-        emailError.value = "Email field is required"
+        emailError.value = mContext.getString(R.string.email_field_is_required)
         return false
     }
 
     if (Patterns.EMAIL_ADDRESS.matcher(email).matches().not()) {
-        emailError.value = "Email format is not correct"
+        emailError.value = mContext.getString(R.string.email_format_is_not_correct)
         return false
     }
 
