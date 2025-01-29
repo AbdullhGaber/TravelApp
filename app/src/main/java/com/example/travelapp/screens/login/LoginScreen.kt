@@ -36,6 +36,7 @@ import com.example.data.uitls.Resource
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
+import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.common.TripTextField
 import com.example.travelapp.utils.isEmailValid
 import com.example.travelapp.utils.isPasswordValid
@@ -53,10 +54,8 @@ fun LoginScreen(
             .background(MaterialTheme.colorScheme.secondary)
     ) {
         if (authStateFlow.value is Resource.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp
+            TripCircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
             )
         }
 
