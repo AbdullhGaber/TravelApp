@@ -1,5 +1,6 @@
 package com.example.travelapp.screens.trips.add
 
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,15 +8,17 @@ import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.textToLocalDate
 import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
+import com.example.data.uitls.mContext
 import com.example.domain.entity.TripEntity
 import com.example.domain.use_cases.trip.TripUseCases
+import com.example.travelapp.R
 import com.example.travelapp.utils.areAddTripFieldsValid
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.round
+
 
 @HiltViewModel
 class AddTripViewModel @Inject constructor(
@@ -60,7 +63,7 @@ class AddTripViewModel @Inject constructor(
         }
     }
 
-    fun saveTrip(){
+    private fun saveTrip(){
         viewModelScope.launch {
             _saveTripState.emit(Resource.Loading())
         }
@@ -88,7 +91,7 @@ class AddTripViewModel @Inject constructor(
                 trip = trip,
                 onSuccess = {
                     viewModelScope.launch {
-                        _saveTripState.emit(Resource.Success("Trip has been added successfully"))
+                        _saveTripState.emit(Resource.Success(mContext.getString(R.string.trip_has_been_added_successfully)))
                     }
 
                     mTripUseCases.scheduleTripNotificationUseCase(trip)
