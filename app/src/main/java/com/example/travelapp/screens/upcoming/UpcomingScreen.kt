@@ -132,7 +132,7 @@ fun ShowNoItems(
             text = stringResource(R.string.there_are_no_items_here),
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }
