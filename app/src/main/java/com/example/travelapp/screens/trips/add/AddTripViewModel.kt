@@ -2,17 +2,28 @@ package com.example.travelapp.screens.trips.add
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.textToLocalDate
+import com.example.data.uitls.DataUtil
+import com.example.data.uitls.Resource
+import com.example.domain.entity.TripEntity
 import com.example.domain.use_cases.trip.TripUseCases
 import com.example.travelapp.utils.areAddTripFieldsValid
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.round
 
 @HiltViewModel
 class AddTripViewModel @Inject constructor(
     private val mTripUseCases : TripUseCases
 ) : ViewModel() {
+    private val _saveTripState = MutableStateFlow<Resource<String>>(Resource.Unspecified())
+    val saveTripState = _saveTripState.asStateFlow()
+
     val tripStartPState = mutableStateOf("")
     val tripStartPErrorState = mutableStateOf("")
 
@@ -40,6 +51,56 @@ class AddTripViewModel @Inject constructor(
 
     val isExpanded = mutableStateOf(false)
     val isRoundTrip = mutableStateOf(false)
+
+    fun onEvent(event : TripEvents){
+        when (event){
+            is TripEvents.SaveTrip -> {
+                saveTrip()
+            }
+        }
+    }
+
+    fun saveTrip(){
+        viewModelScope.launch {
+            _saveTripState.emit(Resource.Loading())
+        }
+
+        if(areFieldsValid()){
+            if(!isRoundTrip.value){
+                roundTripSelectedDate.value = null
+                roundTripSelectedTime.value = null
+            }
+
+            val trip = TripEntity(
+                name = tripNameState.value,
+                status = TripEntity.UPCOMING,
+                type = if(isRoundTrip.value) TripEntity.ROUND_DIRECTION_TRIP else TripEntity.ONE_DIRECTION_TRIP ,
+                startDestination = tripStartPState.value,
+                endDestination = tripEndPState.value,
+                date = selectedSingleTripDate.value!!,
+                time = selectedSingleTripTime.value!!,
+                returnDate = roundTripSelectedDate.value,
+                returnTime = roundTripSelectedTime.value
+            )
+
+            mTripUseCases.addTripUseCase(
+                uid = DataUtil.tripUser?.uid ?: "",
+                trip = trip,
+                onSuccess = {
+                    viewModelScope.launch {
+                        _saveTripState.emit(Resource.Success("Trip has been added successfully"))
+                    }
+
+                    mTripUseCases.scheduleTripNotificationUseCase(trip)
+                },
+                onFailure = {
+                    viewModelScope.launch {
+                        _saveTripState.emit(Resource.Failure(it.message))
+                    }
+                }
+            )
+        }
+    }
 
     private fun areFieldsValid() : Boolean{
         val startLocalDate = textToLocalDate(selectedSingleTripDate.value)

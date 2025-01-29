@@ -7,6 +7,7 @@ import com.example.domain.repositories.user.UserRepository
 import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.auth.LoginUseCase
 import com.example.domain.use_cases.auth.RegisterUseCase
+import com.example.domain.use_cases.trip.AddTripUseCase
 import com.example.domain.use_cases.trip.GetTripUseCase
 import com.example.domain.use_cases.trip.ScheduleTripNotificationUseCase
 import com.example.domain.use_cases.trip.TripUseCases
@@ -50,7 +51,8 @@ object UseCasesModule {
     ) : TripUseCases{
         return TripUseCases(
             getTripUseCase = GetTripUseCase(tripRepository),
-            scheduleTripNotificationUseCase = ScheduleTripNotificationUseCase(tripNotificationScheduler)
+            scheduleTripNotificationUseCase = ScheduleTripNotificationUseCase(tripNotificationScheduler),
+            addTripUseCase = AddTripUseCase(tripRepository)
         )
     }
 }

@@ -17,4 +17,13 @@ class TripRepositoryImpl @Inject constructor(
     ) {
          mTripRemoteDataSource.getTrips(uid, onSuccess, onFailure)
     }
+
+    override fun addTrip(
+        uid: String,
+        trip: TripEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        mTripRemoteDataSource.addTrip(uid, trip, onSuccess, onFailure)
+    }
 }

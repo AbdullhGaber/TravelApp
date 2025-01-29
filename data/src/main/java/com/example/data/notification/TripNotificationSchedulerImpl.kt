@@ -29,7 +29,7 @@ class TripNotificationSchedulerImpl @Inject constructor(
         val triggerTime = formatTimeDate(time = trip.time, date = trip.date)?.time
 
         triggerTime?.let{
-            alarmManager.setAndAllowWhileIdle(
+            alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 it,
                 pendingIntent

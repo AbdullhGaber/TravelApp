@@ -8,6 +8,13 @@ interface TripRepository {
         onSuccess : (List<TripEntity>?) -> Unit,
         onFailure : (Throwable) -> Unit
     )
+
+    fun addTrip(
+        uid: String,
+        trip: TripEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
 }
 
 interface TripRemoteDataSource{
@@ -15,6 +22,13 @@ interface TripRemoteDataSource{
         uid : String,
         onSuccess : (List<TripEntity>?) -> Unit,
         onFailure : (Throwable) -> Unit
+    )
+
+    fun addTrip(
+        uid: String,
+        trip: TripEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
     )
 }
 
