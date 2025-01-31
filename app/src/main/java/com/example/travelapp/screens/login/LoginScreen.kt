@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,8 +37,7 @@ import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
 import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.utils.isEmailValid
-import com.example.travelapp.utils.isPasswordValid
+import com.example.travelapp.utils.AuthValidator
 
 @Composable
 fun LoginScreen(
@@ -136,7 +134,7 @@ fun LoginForm(viewModel: LoginViewModel){
             onValueChange = {
                 viewModel.emailState.value = it
                 viewModel.emailErrorState.value = ""
-                isEmailValid(
+                viewModel.authValidator.isEmailValid(
                     email = it,
                     emailError = viewModel.emailErrorState
                 )
@@ -155,7 +153,7 @@ fun LoginForm(viewModel: LoginViewModel){
             onValueChange = {
                 viewModel.passwordState.value = it
                 viewModel.passwordErrorState.value = ""
-                isPasswordValid(
+                viewModel.authValidator.isPasswordValid(
                     password = it,
                     passwordError = viewModel.passwordErrorState
                 )

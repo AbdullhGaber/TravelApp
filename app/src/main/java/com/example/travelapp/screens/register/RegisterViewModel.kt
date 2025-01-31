@@ -1,6 +1,7 @@
 package com.example.travelapp.screens.register
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -14,8 +15,9 @@ import com.example.domain.entity.TripUserEntity
 import com.example.domain.manager.LocalUserManager
 import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.user.UserUseCases
-import com.example.travelapp.utils.areRegisterFieldsValid
+import com.example.travelapp.utils.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,8 +30,10 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val mAuthUseCases: AuthUseCases,
     private val mUserUseCases: UserUseCases,
-    private val mLocalUserManager: LocalUserManager
+    private val mLocalUserManager: LocalUserManager,
+    @ApplicationContext private val mContext: Context
 ): ViewModel() {
+    val authValidator = AuthValidator(mContext)
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
 
@@ -171,7 +175,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun areFieldsValid() : Boolean{
-        return areRegisterFieldsValid(
+        return authValidator.areRegisterFieldsValid(
             emailState.value,
             emailErrorState,
             nameState.value,

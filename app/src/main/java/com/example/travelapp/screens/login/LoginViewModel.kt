@@ -1,5 +1,6 @@
 package com.example.travelapp.screens.login
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,9 +10,9 @@ import com.example.data.uitls.Resource
 import com.example.domain.manager.LocalUserManager
 import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.user.UserUseCases
-import com.example.travelapp.utils.isEmailValid
-import com.example.travelapp.utils.isPasswordValid
+import com.example.travelapp.utils.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,8 +24,10 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val mAuthUseCases: AuthUseCases,
     private val mUserUseCases: UserUseCases,
-    private val mLocalUserManager: LocalUserManager
+    private val mLocalUserManager: LocalUserManager,
+    @ApplicationContext private val mContext: Context
 ) : ViewModel() {
+    val authValidator = AuthValidator(mContext)
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
 
@@ -102,10 +105,10 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun areFieldsValid() : Boolean{
-        return isEmailValid(
+        return authValidator.isEmailValid(
             email = emailState.value,
             emailError = emailErrorState
-        ) && isPasswordValid(
+        ) && authValidator.isPasswordValid(
             password = passwordState.value,
             passwordError = passwordErrorState
         )

@@ -13,14 +13,17 @@ import android.media.RingtoneManager
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.data.uitls.mContext
 import com.example.domain.repositories.trip.NotificationHandler
 import com.example.travelapp.MainActivity
 import com.example.travelapp.R
 import com.example.travelapp.utils.hasPostNotificationPermission
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 
-class NotificationHandlerImpl : NotificationHandler {
+class NotificationHandlerImpl  @Inject constructor(
+    @ApplicationContext val mContext : Context
+) : NotificationHandler {
     @SuppressLint("MissingPermission")
     override fun showTripReminderNotification(tripName: String) {
         val intent = Intent(mContext,MainActivity::class.java)

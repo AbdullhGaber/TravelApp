@@ -1,6 +1,7 @@
 package com.example.travelapp.screens.trips.add
 
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,12 +9,12 @@ import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.textToLocalDate
 import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
-import com.example.data.uitls.mContext
 import com.example.domain.entity.TripEntity
 import com.example.domain.use_cases.trip.TripUseCases
 import com.example.travelapp.R
-import com.example.travelapp.utils.areAddTripFieldsValid
+import com.example.travelapp.utils.AddTripValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -22,8 +23,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTripViewModel @Inject constructor(
-    private val mTripUseCases : TripUseCases
+    private val mTripUseCases : TripUseCases,
+    @ApplicationContext private val mContext: Context
 ) : ViewModel() {
+    val addTripValidator = AddTripValidator(mContext)
+
     private val _saveTripState = MutableStateFlow<Resource<String>>(Resource.Unspecified())
     val saveTripState = _saveTripState.asStateFlow()
 
@@ -112,7 +116,7 @@ class AddTripViewModel @Inject constructor(
         val endLocalDate = textToLocalDate(roundTripSelectedDate.value)
         val endMillis = localDateToMillis(endLocalDate)
 
-        return areAddTripFieldsValid(
+        return addTripValidator.areAddTripFieldsValid(
             tripName = tripNameState.value,
             tripNameErrorState = tripNameErrorState,
             startPoint = tripStartPState.value,

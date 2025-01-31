@@ -47,11 +47,6 @@ import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.utils.isEmailValid
-import com.example.travelapp.utils.isPasswordValid
-import com.example.travelapp.utils.isPhoneNoValid
-import com.example.travelapp.utils.isRePasswordValid
-import com.example.travelapp.utils.isUsernameValid
 
 @Composable
 fun RegisterScreen(
@@ -208,7 +203,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.emailState.value = it
             viewModel.emailErrorState.value = ""
-            isEmailValid(
+            viewModel.authValidator.isEmailValid(
                 email = it,
                 emailError = viewModel.emailErrorState
             )
@@ -228,7 +223,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.nameState.value = it
             viewModel.nameErrorState.value = ""
-            isUsernameValid(
+            viewModel.authValidator.isUsernameValid(
                 userName = it,
                 userNameError = viewModel.nameErrorState
             )
@@ -247,7 +242,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.passwordState.value = it
             viewModel.passwordErrorState.value = ""
-            isPasswordValid(
+            viewModel.authValidator.isPasswordValid(
                 password = it,
                 passwordError = viewModel.passwordErrorState
             )
@@ -273,7 +268,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.rePasswordState.value = it
             viewModel.rePasswordErrorState.value = ""
-            isRePasswordValid(
+            viewModel.authValidator.isRePasswordValid(
                 rePassword = it,
                 rePasswordError = viewModel.rePasswordErrorState,
                 password = viewModel.passwordState.value
@@ -299,7 +294,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.phoneNoState.value = it
             viewModel.phoneNoErrorState.value = ""
-            isPhoneNoValid(
+            viewModel.authValidator.isPhoneNoValid(
                 phoneNo = it,
                 phoneNoError = viewModel.phoneNoErrorState
             )

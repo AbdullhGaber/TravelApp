@@ -12,8 +12,7 @@ import com.example.data.mapper.localTimeToText
 import com.example.data.mapper.textToLocalDate
 import com.example.travelapp.R
 import com.example.travelapp.screens.trips.add.AddTripViewModel
-import com.example.travelapp.utils.isTripEndPointDateValid
-import com.example.travelapp.utils.isTripEndTimeValid
+
 
 @Composable
 fun TripTypeForm(
@@ -40,14 +39,14 @@ fun TripTypeForm(
                     val endLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
                     val endDateMillis = localDateToMillis(endLocalDate)
 
-                    isTripEndPointDateValid(
+                    viewModel.addTripValidator.isTripEndPointDateValid(
                         firstTripDateMillis = startDateMillis,
                         secondTripDateMillis = selectedMillis,
                         viewModel.roundTripSelectedDateErrorState
                     )
 
                     if(viewModel.roundTripSelectedTime.value != null){
-                        isTripEndTimeValid(
+                        viewModel.addTripValidator.isTripEndTimeValid(
                             endTime =viewModel.roundTripSelectedTime.value,
                             startTime = viewModel.selectedSingleTripTime.value,
                             selectedStartDateMillis = startDateMillis,
@@ -84,7 +83,7 @@ fun TripTypeForm(
 
                 val firstTripDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
                 val firstDateMillis = localDateToMillis(firstTripDate)
-                isTripEndTimeValid(
+                viewModel.addTripValidator.isTripEndTimeValid(
                     endTime = viewModel.roundTripSelectedTime.value,
                     startTime = viewModel.selectedSingleTripTime.value,
                     selectedStartDateMillis = firstDateMillis,
@@ -95,7 +94,7 @@ fun TripTypeForm(
             },
             onDismissRequest = {
                 if(viewModel.roundTripSelectedTime.value == null){
-                    isTripEndTimeValid(
+                    viewModel.addTripValidator.isTripEndTimeValid(
                         endTime = viewModel.roundTripSelectedTime.value,
                         startTime = viewModel.selectedSingleTripTime.value,
                         selectedStartDateMillis = 0L,

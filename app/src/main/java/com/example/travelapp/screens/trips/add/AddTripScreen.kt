@@ -76,8 +76,12 @@ fun AddTripScreen(
             }
 
             is Resource.Success -> {
-                Toast.makeText(context,saveTripState.value.data,Toast.LENGTH_LONG).show()
-                navigateUp()
+                LaunchedEffect(saveTripState.value.data) {
+                    saveTripState.value.data?.let { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    }
+                    navigateUp()
+                }
             }
 
             else -> Unit

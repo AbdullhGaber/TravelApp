@@ -20,13 +20,7 @@ import com.example.data.mapper.textToLocalDate
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.TripTextField
 import com.example.travelapp.screens.trips.add.AddTripViewModel
-import com.example.travelapp.utils.isEndPointValid
-import com.example.travelapp.utils.isStartPointValid
-import com.example.travelapp.utils.isTripEndPointDateValid
-import com.example.travelapp.utils.isTripEndTimeValid
-import com.example.travelapp.utils.isTripNameValid
-import com.example.travelapp.utils.isTripStartPointDateValid
-import com.example.travelapp.utils.isTripStartTimeValid
+
 
 
 @Composable
@@ -42,7 +36,7 @@ fun AddTripForm(
         onValueChange = {
             viewModel.tripStartPErrorState.value = ""
             viewModel.tripStartPState.value = it
-            isStartPointValid(it,viewModel.tripStartPErrorState)
+            viewModel.addTripValidator.isStartPointValid(it,viewModel.tripStartPErrorState)
         },
         isError = viewModel.tripStartPErrorState.value.isNotEmpty(),
         errorMessage = viewModel.tripStartPErrorState.value,
@@ -68,7 +62,7 @@ fun AddTripForm(
         onValueChange = {
             viewModel.tripEndPErrorState.value = ""
             viewModel.tripEndPState.value = it
-            isEndPointValid(it,viewModel.tripEndPErrorState)
+            viewModel.addTripValidator.isEndPointValid(it,viewModel.tripEndPErrorState)
         },
         isError = viewModel.tripEndPErrorState.value.isNotEmpty(),
         errorMessage = viewModel.tripEndPErrorState.value,
@@ -94,7 +88,7 @@ fun AddTripForm(
         onValueChange = {
             viewModel.tripNameErrorState.value = ""
             viewModel.tripNameState.value = it
-            isTripNameValid(it,viewModel.tripNameErrorState)
+            viewModel.addTripValidator.isTripNameValid(it,viewModel.tripNameErrorState)
         },
         isError = viewModel.tripNameErrorState.value.isNotEmpty(),
         errorMessage = viewModel.tripNameErrorState.value,
@@ -124,7 +118,7 @@ fun AddTripForm(
             if(viewModel.roundTripSelectedDate.value != null){
                 val secondTripLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
                 val secondDateMillis = localDateToMillis(secondTripLocalDate)
-                isTripEndPointDateValid(
+                viewModel.addTripValidator.isTripEndPointDateValid(
                     firstTripDateMillis = selectedMillis,
                     secondTripDateMillis = secondDateMillis,
                     viewModel.roundTripSelectedDateErrorState
@@ -134,7 +128,7 @@ fun AddTripForm(
             if(viewModel.selectedSingleTripTime.value != null){
                 val localDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
                 val dateMillis = localDateToMillis(localDate)
-                isTripStartTimeValid(
+                viewModel.addTripValidator.isTripStartTimeValid(
                     time = viewModel.selectedSingleTripTime.value,
                     selectedDateMillis = dateMillis,
                     timeErrorState = viewModel.selectedSingleTimeErrorState
@@ -148,7 +142,7 @@ fun AddTripForm(
                 val endLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
                 val endDateMillis = localDateToMillis(endLocalDate)
 
-                isTripEndTimeValid(
+                viewModel.addTripValidator.isTripEndTimeValid(
                     endTime =viewModel.roundTripSelectedTime.value,
                     startTime = viewModel.selectedSingleTripTime.value,
                     selectedStartDateMillis = startDateMillis,
@@ -157,7 +151,7 @@ fun AddTripForm(
                 )
             }
 
-            isTripStartPointDateValid(
+            viewModel.addTripValidator.isTripStartPointDateValid(
                 selectedMillis = selectedMillis,
                 selectedDateErrorState = viewModel.selectedSingleDateErrorState
             )
@@ -192,7 +186,7 @@ fun AddTripForm(
 
                 val secondTripLocalDate = textToLocalDate(viewModel.roundTripSelectedDate.value)
                 val secondDateMillis = localDateToMillis(secondTripLocalDate)
-                isTripEndTimeValid(
+                viewModel.addTripValidator.isTripEndTimeValid(
                     endTime = viewModel.roundTripSelectedTime.value,
                     startTime = viewModel.selectedSingleTripTime.value,
                     selectedStartDateMillis = firstDateMillis,
@@ -202,12 +196,12 @@ fun AddTripForm(
             }
             val localDate = textToLocalDate(viewModel.selectedSingleTripDate.value)
             val dateMillis = localDateToMillis(localDate)
-            isTripStartTimeValid(viewModel.selectedSingleTripTime.value,dateMillis,viewModel.selectedSingleTimeErrorState)
+            viewModel.addTripValidator.isTripStartTimeValid(viewModel.selectedSingleTripTime.value,dateMillis,viewModel.selectedSingleTimeErrorState)
             viewModel.showSingleTripTimePickerDialog.value = false
         },
         onDismissRequest = {
             if(viewModel.selectedSingleTripTime.value == null){
-                isTripStartTimeValid(viewModel.selectedSingleTripTime.value,0L,viewModel.selectedSingleTimeErrorState)
+                viewModel.addTripValidator.isTripStartTimeValid(viewModel.selectedSingleTripTime.value,0L,viewModel.selectedSingleTimeErrorState)
             }
             viewModel.showSingleTripTimePickerDialog.value = false
         }
