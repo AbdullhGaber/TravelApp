@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.domain.entity.TripEntity
 import com.example.travelapp.screens.upcoming.components.TripCard
+import com.example.travelapp.ui.theme.TravelAppTheme
 
 @Composable
 fun TripCardList(
@@ -38,5 +39,9 @@ fun TripCardList(
 @Composable
 @Preview
 fun PreviewTripCardList(){
-    TripCardList()
+   TravelAppTheme {
+       TripCardList(trips = listOf(
+           TripEntity(name = "My Trip" , startDestination = "Cairo", endDestination = "Banha")
+       ))
+   }
 }
