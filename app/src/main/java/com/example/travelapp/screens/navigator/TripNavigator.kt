@@ -48,6 +48,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.data.uitls.DataUtil
 import com.example.data.uitls.NetworkUtil
+import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.navigator.components.NavItems
@@ -58,7 +59,9 @@ import com.example.travelapp.ui.theme.LightGray
 import java.io.File
 
 @Composable
-fun TripNavigator(){
+fun TripNavigator(
+    mainViewModel: MainViewModel
+){
     val navController = rememberNavController()
     val navigatorViewModel : NavigatorViewModel = hiltViewModel()
 
@@ -79,6 +82,7 @@ fun TripNavigator(){
                 route = Route.UpComingScreen.route
             ){
                 UpcomingScreen(
+                    mainViewModel = mainViewModel,
                     navigateToAddTrip = {
                         navController.navigate(Route.AddTripScreen.route)
                     }
@@ -284,5 +288,5 @@ private fun DrawerContent(
 @Composable
 @Preview
 fun PreviewTripNavigator(){
-    TripNavigator()
+//    TripNavigator()
 }

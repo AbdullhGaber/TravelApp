@@ -13,6 +13,7 @@ import android.media.RingtoneManager
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
 import com.example.domain.repositories.trip.NotificationHandler
 import com.example.travelapp.MainActivity
 import com.example.travelapp.R
@@ -26,7 +27,7 @@ class NotificationHandlerImpl  @Inject constructor(
 ) : NotificationHandler {
     @SuppressLint("MissingPermission")
     override fun showTripReminderNotification(tripName: String) {
-        val intent = Intent(mContext,MainActivity::class.java)
+        val intent = Intent(mContext,MainActivity::class.java).also{it.putExtra(SHOW_TRIP_REMINDER_KEY,true)}
 
         val pendingIntent = PendingIntent.getActivity(
             mContext,
@@ -54,7 +55,17 @@ class NotificationHandlerImpl  @Inject constructor(
 
         if (hasPostNotificationPermission(mContext)) {
             NotificationManagerCompat.from(mContext).notify(System.currentTimeMillis().toInt(), notification)
+            sendShowDialogIntentToMainActivity()
         }
+    }
+
+    private fun sendShowDialogIntentToMainActivity(){
+        // Send an intent to MainActivity to open the dialog
+        val mainIntent = Intent(mContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(SHOW_TRIP_REMINDER_KEY, true)
+        }
+        mContext.startActivity(mainIntent)
     }
 
     private fun createNotificationChannel(context: Context) {

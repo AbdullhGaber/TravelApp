@@ -34,14 +34,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
+import com.example.domain.entity.TripEntity
+import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.TripCardList
 import com.example.travelapp.screens.common.TripCardListShimmerEffect
+import com.example.travelapp.screens.common.TripReminderDialog
 
 
 @Composable
 fun UpcomingScreen(
     viewModel: UpcomingViewModel = hiltViewModel(),
+    mainViewModel : MainViewModel,
     navigateToAddTrip : () -> Unit = {}
 ){
     val tripsState = viewModel.tripStateFlow.collectAsState()
@@ -99,9 +103,18 @@ fun UpcomingScreen(
                 if(tripsState.value is Resource.Loading){
                     TripCardListShimmerEffect()
                 }
+
+                if(mainViewModel.getShouldShowTripReminderDialog().value){
+                    TripReminderDialog(
+                        trip = TripEntity(),
+                        onCancelClick = {mainViewModel.dismissTripReminderDialog()}
+                    )
+                }
             }
 
-            if(tripsState.value !is Resource.Loading && (tripsState.value.data == null || tripsState.value.data!!.isEmpty())){
+            if(tripsState.value !is Resource.Loading
+                && (tripsState.value.data == null || tripsState.value.data!!.isEmpty())
+                ){
                 ShowNoItems(
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -139,5 +152,5 @@ fun ShowNoItems(
 @Composable
 @Preview
 fun PreviewUpcomingScreen(){
-    UpcomingScreen()
+//    UpcomingScreen()
 }

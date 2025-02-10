@@ -13,13 +13,12 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val mLocalUserManager: LocalUserManager
 ) : ViewModel() {
+    var startDestination = mutableStateOf(Route.AuthNavigation.route)
+        private set
 
     init{
         setStartDestination()
     }
-
-    var startDestination = mutableStateOf(Route.AuthNavigation.route)
-        private set
 
     private fun setStartDestination(){
         viewModelScope.launch {
@@ -27,5 +26,18 @@ class MainViewModel @Inject constructor(
                 uid?.let{startDestination.value = Route.HomeNavigation.route}
             }
         }
+    }
+
+
+    private val shouldShowTripReminderDialog = mutableStateOf(false)
+
+    fun getShouldShowTripReminderDialog() = shouldShowTripReminderDialog
+
+    fun showTripReminderDialog() {
+        shouldShowTripReminderDialog.value = true
+    }
+
+    fun dismissTripReminderDialog() {
+        shouldShowTripReminderDialog.value = false
     }
 }

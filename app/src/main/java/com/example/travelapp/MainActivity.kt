@@ -2,20 +2,28 @@ package com.example.travelapp
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.activity.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
 import com.example.travelapp.screens.nav_graph.NavGraph
+import com.example.travelapp.screens.upcoming.UpcomingViewModel
 import com.example.travelapp.ui.theme.TravelAppTheme
 import com.example.travelapp.utils.hasPostNotificationPermission
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    var navController : NavHostController? = null
+    val viewModel : MainViewModel by viewModels()
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -35,9 +43,22 @@ class MainActivity : ComponentActivity() {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         setContent {
             TravelAppTheme {
-                val viewModel : MainViewModel = hiltViewModel()
-                NavGraph(startDestination = viewModel.startDestination.value)
+                navController = rememberNavController()
+                NavGraph(
+                    navController = navController!!,
+                    mainViewModel = viewModel,
+                    startDestination = viewModel.startDestination.value
+                )
             }
         }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val shouldShowDialog = intent.getBooleanExtra(SHOW_TRIP_REMINDER_KEY, false) ?: false
+        if (shouldShowDialog) {
+            viewModel.showTripReminderDialog()
+        }
+    }
+
 }
