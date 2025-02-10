@@ -74,4 +74,5 @@
     <string name="pick_a_time">اختر الوقت</string>
     <string name="pick_a_date">اختر التاريخ</string>
     <string name="date_field_is_required">يجب اختيار تاريخ</string>
+    <string name="later">لاحقاً</string>
 </resources>
