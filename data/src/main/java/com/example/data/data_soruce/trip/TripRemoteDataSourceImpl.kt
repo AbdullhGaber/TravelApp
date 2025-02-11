@@ -46,4 +46,29 @@ class TripRemoteDataSourceImpl @Inject constructor(
             onFailure(it)
         }
     }
+
+    override fun getTripById(
+        id: String,
+        uid:String,
+        onSuccess: (TripEntity) -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        val tripDocRef = mFireStore.
+        collection(USER_COLLECTION).
+        document(uid).
+        collection(TripEntity.TRIP_COLLECTION).document(id)
+
+        tripDocRef.get().addOnSuccessListener {
+            val trip = it.toObject(TripEntity::class.java)
+            if(trip != null){
+                onSuccess(trip)
+                Log.e("FIB FireStore Repo","trip retrieved by id successfully")
+            }else{
+                Log.e("FIB FireStore Repo","Error : trip is null")
+            }
+        }.addOnFailureListener {
+            onFailure(it)
+            Log.e("FIB FireStore Repo","Error : ${it.message}")
+        }
+    }
 }

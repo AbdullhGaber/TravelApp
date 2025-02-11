@@ -15,6 +15,13 @@ interface TripRepository {
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+    fun getTripById(
+        id : String,
+        uid: String,
+        onSuccess: (TripEntity) -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
 }
 
 interface TripRemoteDataSource{
@@ -30,6 +37,13 @@ interface TripRemoteDataSource{
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+    fun getTripById(
+        id : String,
+        uid: String,
+        onSuccess: (TripEntity) -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
 }
 
 interface TripOfflineDataSource{
@@ -41,5 +55,9 @@ fun interface TripNotificationScheduler {
 }
 
 fun interface NotificationHandler {
-    fun showTripReminderNotification(tripName: String)
+    fun showTripReminderNotification(
+        tripName: String,
+        tripStartDes: String,
+        tripEndDes: String,
+    )
 }
