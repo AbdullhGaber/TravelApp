@@ -10,10 +10,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.viewModels
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
+import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
+import com.example.data.uitls.Constants.TRIP_NAME_KEY
+import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
 import com.example.travelapp.screens.nav_graph.NavGraph
 import com.example.travelapp.screens.upcoming.UpcomingViewModel
 import com.example.travelapp.ui.theme.TravelAppTheme
@@ -41,6 +43,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         if(!hasPostNotificationPermission(this))
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        if(intent != null){
+            this.onNewIntent(intent)
+        }
+
         setContent {
             TravelAppTheme {
                 navController = rememberNavController()
@@ -55,9 +61,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val shouldShowDialog = intent.getBooleanExtra(SHOW_TRIP_REMINDER_KEY, false) ?: false
+        val shouldShowDialog = intent.getBooleanExtra(SHOW_TRIP_REMINDER_KEY, false)
+        val tripName = intent.getStringExtra(TRIP_NAME_KEY) ?: "My Trip"
+        val tripStartDes = intent.getStringExtra(TRIP_START_DESTINATION_KEY) ?: "My Start Des"
+        val tripEndDes = intent.getStringExtra(TRIP_END_DESTINATION_KEY) ?: "My Start Des"
         if (shouldShowDialog) {
             viewModel.showTripReminderDialog()
+            viewModel.setTripData(tripName,tripStartDes,tripEndDes)
         }
     }
 

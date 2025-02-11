@@ -30,8 +30,24 @@ class MainViewModel @Inject constructor(
 
 
     private val shouldShowTripReminderDialog = mutableStateOf(false)
+    private val tripNameState = mutableStateOf("")
+    private val tripStartDesState = mutableStateOf("")
+    private val tripEndDesState = mutableStateOf("")
 
     fun getShouldShowTripReminderDialog() = shouldShowTripReminderDialog
+    fun getTripNameState() = tripNameState
+    fun getTripStartDesState() = tripStartDesState
+    fun getTripEndDesState() = tripEndDesState
+
+    fun setTripData(
+        name : String,
+        startDes : String,
+        endDes : String
+    ){
+        tripNameState.value = name
+        tripStartDesState.value = startDes
+        tripEndDesState.value = endDes
+    }
 
     fun showTripReminderDialog() {
         shouldShowTripReminderDialog.value = true

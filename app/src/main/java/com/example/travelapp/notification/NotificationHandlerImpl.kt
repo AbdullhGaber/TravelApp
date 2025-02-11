@@ -14,6 +14,9 @@ import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
+import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
+import com.example.data.uitls.Constants.TRIP_NAME_KEY
+import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
 import com.example.domain.repositories.trip.NotificationHandler
 import com.example.travelapp.MainActivity
 import com.example.travelapp.R
@@ -26,8 +29,18 @@ class NotificationHandlerImpl  @Inject constructor(
     @ApplicationContext val mContext : Context
 ) : NotificationHandler {
     @SuppressLint("MissingPermission")
-    override fun showTripReminderNotification(tripName: String) {
-        val intent = Intent(mContext,MainActivity::class.java).also{it.putExtra(SHOW_TRIP_REMINDER_KEY,true)}
+    override fun showTripReminderNotification(
+        tripName: String,
+        tripStartDes: String,
+        tripEndDes: String,
+    ) {
+        val intent = Intent(mContext,MainActivity::class.java).also{
+            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            it.putExtra(SHOW_TRIP_REMINDER_KEY,true)
+            it.putExtra(TRIP_NAME_KEY,tripName)
+            it.putExtra(TRIP_START_DESTINATION_KEY,tripStartDes)
+            it.putExtra(TRIP_END_DESTINATION_KEY,tripEndDes)
+        }
 
         val pendingIntent = PendingIntent.getActivity(
             mContext,
@@ -55,15 +68,22 @@ class NotificationHandlerImpl  @Inject constructor(
 
         if (hasPostNotificationPermission(mContext)) {
             NotificationManagerCompat.from(mContext).notify(System.currentTimeMillis().toInt(), notification)
-            sendShowDialogIntentToMainActivity()
+            sendShowDialogIntentToMainActivity(tripName, tripStartDes, tripEndDes)
         }
     }
 
-    private fun sendShowDialogIntentToMainActivity(){
+    private fun sendShowDialogIntentToMainActivity(
+        tripName: String,
+        tripStartDes: String,
+        tripEndDes: String,
+    ){
         // Send an intent to MainActivity to open the dialog
         val mainIntent = Intent(mContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra(SHOW_TRIP_REMINDER_KEY, true)
+            putExtra(TRIP_NAME_KEY,tripName)
+            putExtra(TRIP_START_DESTINATION_KEY,tripStartDes)
+            putExtra(TRIP_END_DESTINATION_KEY,tripEndDes)
         }
         mContext.startActivity(mainIntent)
     }

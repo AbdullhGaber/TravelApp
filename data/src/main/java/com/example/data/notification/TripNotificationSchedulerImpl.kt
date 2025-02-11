@@ -17,7 +17,12 @@ class TripNotificationSchedulerImpl @Inject constructor(
         val alarmManager = mContext.getSystemService(AlarmManager::class.java)
 
         val intent = Intent(mContext, TripReminderReceiver::class.java)
-            .apply { putExtra("tripName" , trip.name) }
+            .apply {
+                putExtra("tripId" , trip.id)
+                putExtra("tripName" , trip.name)
+                putExtra("tripStartDes" , trip.startDestination)
+                putExtra("tripEndDes" , trip.endDestination)
+            }
 
         val pendingIntent = PendingIntent.getBroadcast(
             mContext,

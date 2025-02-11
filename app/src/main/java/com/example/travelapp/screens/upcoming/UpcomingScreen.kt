@@ -106,7 +106,11 @@ fun UpcomingScreen(
 
                 if(mainViewModel.getShouldShowTripReminderDialog().value){
                     TripReminderDialog(
-                        trip = TripEntity(),
+                        trip = TripEntity(
+                            name = mainViewModel.getTripNameState().value,
+                            startDestination = mainViewModel.getTripStartDesState().value,
+                            endDestination = mainViewModel.getTripEndDesState().value
+                        ),
                         onCancelClick = {mainViewModel.dismissTripReminderDialog()}
                     )
                 }

@@ -13,6 +13,8 @@ class TripReminderReceiver: BroadcastReceiver(){
     lateinit var mTripNotificationHandler: NotificationHandler
     override fun onReceive(context: Context?, intent: Intent?) {
         val tripName = intent?.getStringExtra("tripName") ?: "Your Trip"
-        mTripNotificationHandler.showTripReminderNotification(tripName)
+        val tripStartDes = intent?.getStringExtra("tripStartDes") ?: "Your Start Destination"
+        val tripEndDes = intent?.getStringExtra("tripEndDes") ?: "Your End Destination"
+        mTripNotificationHandler.showTripReminderNotification(tripName,tripStartDes,tripEndDes)
     }
 }
