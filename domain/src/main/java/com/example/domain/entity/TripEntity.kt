@@ -2,6 +2,7 @@ package com.example.domain.entity
 
 data class TripEntity(
     var id : String? = null,
+    var uid : String = "",
     val notes : List<String> = emptyList(),
     val status : String = "",
     val name : String = "Trip",
@@ -12,6 +13,7 @@ data class TripEntity(
     val returnDate : String? = null,
     val returnTime : String? = null,
     val type : String = "",
+    var hasTimeCome : Boolean = false
 ){
     companion object {
         const val TRIP_COLLECTION = "trips"
