@@ -21,7 +21,8 @@ class DatabaseModule {
             context,
             TravelRoomDatabase::class.java,
             "travel_db"
-        ).build()
+        ).fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides
@@ -29,5 +30,12 @@ class DatabaseModule {
         travelDB : TravelRoomDatabase
     ): UserDao{
         return travelDB.userDao
+    }
+
+    @Provides
+    fun provideTripDao(
+        travelDB : TravelRoomDatabase
+    ): TripDao{
+        return travelDB.tripDao
     }
 }
