@@ -4,5 +4,6 @@ data class TripUseCases(
     val getTripUseCase : GetTripUseCase,
     val scheduleTripNotificationUseCase: ScheduleTripNotificationUseCase,
     val addTripUseCase: AddTripUseCase,
-    val getTripByIdUseCase: GetTripByIdUseCase
+    val getTripByIdUseCase: GetTripByIdUseCase,
+    val getScheduledTrips: GetScheduledTrips
 )
