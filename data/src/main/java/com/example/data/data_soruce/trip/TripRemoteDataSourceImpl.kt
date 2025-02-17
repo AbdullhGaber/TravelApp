@@ -30,12 +30,11 @@ class TripRemoteDataSourceImpl @Inject constructor(
     }
 
     override fun addTrip(
-        uid: String,
         trip: TripEntity,
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit,
     ) {
-        val userDocRef = mFireStore.collection(USER_COLLECTION).document(uid)
+        val userDocRef = mFireStore.collection(USER_COLLECTION).document(trip.uid)
         val tripCollection = userDocRef.collection(TripEntity.TRIP_COLLECTION).document()
         trip.id = tripCollection.id
         tripCollection.set(trip).addOnSuccessListener {

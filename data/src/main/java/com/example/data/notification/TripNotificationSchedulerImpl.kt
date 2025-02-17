@@ -4,6 +4,10 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
+import com.example.data.uitls.Constants.TRIP_ID_KEY
+import com.example.data.uitls.Constants.TRIP_NAME_KEY
+import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
 import com.example.data.uitls.formatTimeDate
 import com.example.domain.entity.TripEntity
 import com.example.domain.repositories.trip.TripNotificationScheduler
@@ -18,10 +22,10 @@ class TripNotificationSchedulerImpl @Inject constructor(
 
         val intent = Intent(mContext, TripReminderReceiver::class.java)
             .apply {
-                putExtra("tripId" , trip.id)
-                putExtra("tripName" , trip.name)
-                putExtra("tripStartDes" , trip.startDestination)
-                putExtra("tripEndDes" , trip.endDestination)
+                putExtra(TRIP_ID_KEY , trip.id)
+                putExtra(TRIP_NAME_KEY , trip.name)
+                putExtra(TRIP_START_DESTINATION_KEY , trip.startDestination)
+                putExtra(TRIP_END_DESTINATION_KEY , trip.endDestination)
             }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -40,6 +44,5 @@ class TripNotificationSchedulerImpl @Inject constructor(
                 pendingIntent
             )
         }
-
     }
 }

@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
 import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
+import com.example.data.uitls.Constants.TRIP_ID_KEY
 import com.example.data.uitls.Constants.TRIP_NAME_KEY
 import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
 import com.example.domain.repositories.trip.NotificationHandler
@@ -59,7 +60,9 @@ class NotificationHandlerImpl  @Inject constructor(
             .setContentText(mContext.getString(R.string.it_s_time_for_your_trip) + tripName)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
+            .setAutoCancel(false)
+            .setOnlyAlertOnce(false)
+            .setTimeoutAfter(10000)
             .setSound(soundUri)  // Use the system's default alarm sound
             .setVibrate(longArrayOf(0, 500, 1000)) // Vibration pattern
             .setDefaults(NotificationCompat.DEFAULT_LIGHTS or NotificationCompat.DEFAULT_VIBRATE)

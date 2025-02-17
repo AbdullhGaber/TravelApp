@@ -2,7 +2,6 @@ package com.example.travelapp.screens.upcoming
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
-import com.example.domain.entity.TripEntity
 import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.TripCardList
@@ -103,16 +101,22 @@ fun UpcomingScreen(
                 if(tripsState.value is Resource.Loading){
                     TripCardListShimmerEffect()
                 }
+                val scheduledTrips = mainViewModel.scheduledTripsStateFlow.collectAsState()
 
-                if(mainViewModel.getShouldShowTripReminderDialog().value){
-                    TripReminderDialog(
-                        trip = TripEntity(
-                            name = mainViewModel.getTripNameState().value,
-                            startDestination = mainViewModel.getTripStartDesState().value,
-                            endDestination = mainViewModel.getTripEndDesState().value
-                        ),
-                        onCancelClick = {mainViewModel.dismissTripReminderDialog()}
-                    )
+                if(scheduledTrips.value is Resource.Success){
+                    mainViewModel.showTripReminderDialog()
+                }
+
+                if(mainViewModel.getShouldShowTripReminderDialog()){
+                    if( scheduledTrips.value.data!!.isNotEmpty()){
+                        TripReminderDialog(
+                            trip = scheduledTrips.value.data!!.last(),
+                            onCancelClick = {
+                                mainViewModel.dismissTripReminderDialog()
+                                mainViewModel.clearScheduledTripFlowState()
+                            }
+                        )
+                    }
                 }
             }
 

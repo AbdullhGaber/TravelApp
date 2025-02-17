@@ -1,6 +1,7 @@
 package com.example.domain.repositories.trip
 
 import com.example.domain.entity.TripEntity
+import kotlinx.coroutines.flow.Flow
 
 interface TripRepository {
     fun getTrips(
@@ -10,7 +11,6 @@ interface TripRepository {
     )
 
     fun addTrip(
-        uid: String,
         trip: TripEntity,
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
@@ -18,10 +18,12 @@ interface TripRepository {
 
     fun getTripById(
         id : String,
-        uid: String,
+        uid:String,
         onSuccess: (TripEntity) -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+    fun getScheduledTrips() : Flow<List<TripEntity>>
 }
 
 interface TripRemoteDataSource{
@@ -32,7 +34,6 @@ interface TripRemoteDataSource{
     )
 
     fun addTrip(
-        uid: String,
         trip: TripEntity,
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
@@ -47,7 +48,11 @@ interface TripRemoteDataSource{
 }
 
 interface TripOfflineDataSource{
-    fun getTrips() : List<TripEntity>?
+    fun getTrips() : Flow<List<TripEntity>>
+
+    suspend fun addTrip(trip: TripEntity)
+
+    fun getScheduledTrips() : Flow<List<TripEntity>>
 }
 
 fun interface TripNotificationScheduler {
