@@ -1,7 +1,6 @@
 package com.example.travelapp
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -79,7 +78,7 @@ class MainViewModel @Inject constructor(
 
     private val shouldShowTripReminderDialog = mutableStateOf(false)
 
-    fun setTripData(
+    fun setTripDataForNotification(
         id : String,
         name : String,
         startDes : String,

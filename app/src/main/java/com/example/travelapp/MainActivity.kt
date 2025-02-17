@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         val tripEndDes = intent.getStringExtra(TRIP_END_DESTINATION_KEY) ?: "My Start Des"
         if (shouldShowDialog) {
             viewModel.showTripReminderDialog()
-            viewModel.setTripData(tripId, tripName,tripStartDes,tripEndDes)
+            viewModel.setTripDataForNotification(tripId, tripName,tripStartDes,tripEndDes)
         }
     }
 
