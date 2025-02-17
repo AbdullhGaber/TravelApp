@@ -8,11 +8,10 @@ class AddTripUseCase @Inject constructor(
     private val mTripRepository: TripRepository
 ) {
     operator fun invoke(
-        uid: String,
         trip: TripEntity,
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
     ){
-        mTripRepository.addTrip(uid, trip, onSuccess, onFailure)
+        mTripRepository.addTrip(trip, onSuccess, onFailure)
     }
 }

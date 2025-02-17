@@ -80,6 +80,7 @@ class AddTripViewModel @Inject constructor(
 
             val trip = TripEntity(
                 name = tripNameState.value,
+                uid =  DataUtil.tripUser?.uid ?: "",
                 status = TripEntity.UPCOMING,
                 type = if(isRoundTrip.value) TripEntity.ROUND_DIRECTION_TRIP else TripEntity.ONE_DIRECTION_TRIP ,
                 startDestination = tripStartPState.value,
@@ -91,7 +92,6 @@ class AddTripViewModel @Inject constructor(
             )
 
             mTripUseCases.addTripUseCase(
-                uid = DataUtil.tripUser?.uid ?: "",
                 trip = trip,
                 onSuccess = {
                     viewModelScope.launch {
