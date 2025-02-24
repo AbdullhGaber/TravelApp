@@ -17,15 +17,22 @@ class TripRemoteDataSourceImpl @Inject constructor(
         onFailure : (Throwable) -> Unit
     ){
         Log.e("Test FireStore","UID = $uid")
-        val tripRefSnapshot = mFireStore.collection(USER_COLLECTION).document(uid).collection(TripEntity.TRIP_COLLECTION).get()
+        val tripRefSnapshot = mFireStore.collection(USER_COLLECTION).document(uid).collection(TripEntity.TRIP_COLLECTION)
 
-        tripRefSnapshot.addOnSuccessListener { result ->
-            val trips = result.toObjects(TripEntity::class.java)
-            Log.e("FIB FireStore data source" , "trips retrieved")
-            onSuccess(trips)
-        }.addOnFailureListener {
-            onFailure(it)
-            Log.e("FIB FireStore data store" , "Error : ${it.message}")
+        tripRefSnapshot.addSnapshotListener { snapShot , error ->
+            if(error != null){
+                onFailure(error)
+                Log.e("FIB FireStore data store" , "Error : ${error.message}")
+            }
+
+            if(snapShot != null && !snapShot.isEmpty){
+                val trips = snapShot.toObjects(TripEntity::class.java)
+                Log.e("FIB FireStore data source" , "trips retrieved")
+                onSuccess(trips)
+            }else{
+                Log.e("FIB FireStore data source", "No trips found")
+                onSuccess(emptyList())
+            }
         }
     }
 
