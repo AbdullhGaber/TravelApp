@@ -1,6 +1,7 @@
 package com.example.travelapp
 
 import android.util.Log
+import androidx.annotation.IntRange
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.example.domain.manager.LocalUserManager
 import com.example.domain.use_cases.trip.TripUseCases
 import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.screens.nav_graph.Route
+import com.example.travelapp.screens.upcoming.UpcomingEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +36,24 @@ class MainViewModel @Inject constructor(
         getScheduledTrips()
     }
 
+    fun onEvent(event : UpcomingEvents){
+        when(event){
+            is UpcomingEvents.OnTripReminderDialogCancelClick -> {
+                dismissTripReminderDialog()
+                clearScheduledTripFlowState()
+                updateHasTimeComeInTrip(event.id, event.value)
+            }
+        }
+    }
+    private fun updateHasTimeComeInTrip(id : String, @IntRange(0,1) value : Int){
+        viewModelScope.launch {
+            try{
+                mTripUseCases.updateTripHasTimeComeUseCase(id,value)
+            }catch(e : Exception){
+                Log.e("MainViewModel Error", e.message.toString())
+            }
+        }
+    }
     private fun getScheduledTrips(){
         viewModelScope.launch {
             _scheduledTripsStateFlow.emit(Resource.Loading())
