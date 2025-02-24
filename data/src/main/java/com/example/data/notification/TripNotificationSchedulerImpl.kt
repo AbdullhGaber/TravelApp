@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
 import com.example.data.uitls.Constants.TRIP_ID_KEY
 import com.example.data.uitls.Constants.TRIP_NAME_KEY
@@ -26,6 +27,7 @@ class TripNotificationSchedulerImpl @Inject constructor(
                 putExtra(TRIP_NAME_KEY , trip.name)
                 putExtra(TRIP_START_DESTINATION_KEY , trip.startDestination)
                 putExtra(TRIP_END_DESTINATION_KEY , trip.endDestination)
+                data = Uri.parse("trip://reminder/${trip.id}")
             }
 
         val pendingIntent = PendingIntent.getBroadcast(
