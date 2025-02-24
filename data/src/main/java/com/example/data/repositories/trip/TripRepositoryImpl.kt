@@ -1,5 +1,6 @@
 package com.example.data.repositories.trip
 
+import androidx.annotation.IntRange
 import com.example.domain.entity.TripEntity
 import com.example.domain.repositories.trip.TripOfflineDataSource
 import com.example.domain.repositories.trip.TripRemoteDataSource
@@ -44,5 +45,9 @@ class TripRepositoryImpl @Inject constructor(
 
     override fun getScheduledTrips(): Flow<List<TripEntity>> {
         return mTripOfflineDataSource.getScheduledTrips()
+    }
+
+    override suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value : Int){
+        mTripOfflineDataSource.updateTripHasTimeCome(id, value)
     }
 }
