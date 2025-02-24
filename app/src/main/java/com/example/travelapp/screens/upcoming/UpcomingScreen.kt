@@ -1,6 +1,7 @@
 package com.example.travelapp.screens.upcoming
 
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +37,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
 import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
+import com.example.travelapp.notification.StopReminderReceiver
+import com.example.travelapp.notification.TripReminderForegroundService
+import com.example.travelapp.notification.TripReminderForegroundService.Companion.STOP_ACTION
 import com.example.travelapp.screens.common.TripCardList
 import com.example.travelapp.screens.common.TripCardListShimmerEffect
 import com.example.travelapp.screens.common.TripReminderDialog
@@ -107,13 +112,20 @@ fun UpcomingScreen(
                     mainViewModel.showTripReminderDialog()
                 }
 
+                val context = LocalContext.current
+
                 if(mainViewModel.getShouldShowTripReminderDialog()){
                     if( scheduledTrips.value.data!!.isNotEmpty()){
+                        val trip = scheduledTrips.value.data!!.last()
                         TripReminderDialog(
-                            trip = scheduledTrips.value.data!!.last(),
+                            trip = trip ,
                             onCancelClick = {
-                                mainViewModel.dismissTripReminderDialog()
-                                mainViewModel.clearScheduledTripFlowState()
+                                mainViewModel.onEvent(UpcomingEvents.OnTripReminderDialogCancelClick(trip.id.toString(),0))
+                                val stopIntent = Intent(context, StopReminderReceiver::class.java).apply {
+                                    action = STOP_ACTION
+                                }
+
+                                context.sendBroadcast(stopIntent)
                             }
                         )
                     }
