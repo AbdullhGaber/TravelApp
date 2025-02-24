@@ -13,6 +13,7 @@ import com.example.domain.use_cases.trip.GetTripByIdUseCase
 import com.example.domain.use_cases.trip.GetTripUseCase
 import com.example.domain.use_cases.trip.ScheduleTripNotificationUseCase
 import com.example.domain.use_cases.trip.TripUseCases
+import com.example.domain.use_cases.trip.UpdateTripHasTimeComeUseCase
 import com.example.domain.use_cases.user.GetUserUseCase
 import com.example.domain.use_cases.user.SaveImageUseCase
 import com.example.domain.use_cases.user.SaveUserUseCase
@@ -21,9 +22,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object UseCasesModule {
     @Provides
     fun provideAuthUseCases(
@@ -56,7 +58,8 @@ object UseCasesModule {
             scheduleTripNotificationUseCase = ScheduleTripNotificationUseCase(tripNotificationScheduler),
             addTripUseCase = AddTripUseCase(tripRepository),
             getTripByIdUseCase = GetTripByIdUseCase(tripRepository),
-            getScheduledTrips = GetScheduledTrips(tripRepository)
+            getScheduledTrips = GetScheduledTrips(tripRepository),
+            updateTripHasTimeComeUseCase = UpdateTripHasTimeComeUseCase(tripRepository)
         )
     }
 }
