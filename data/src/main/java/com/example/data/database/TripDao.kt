@@ -1,5 +1,6 @@
 package com.example.data.database
 
+import androidx.annotation.IntRange
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -8,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TripDao {
-    @Query("UPDATE trips SET hasTimeCome = 1 WHERE id = :id")
-    suspend fun setHasTimeComeToTrue(id : String)
+    @Query("UPDATE trips SET hasTimeCome = :value WHERE id = :id")
+    suspend fun updateHasTimeCome(id : String, @IntRange(0,1) value : Int)
 
     @Query("SELECT * FROM trips")
     fun getAllTrips() : Flow<List<TripModel>>
