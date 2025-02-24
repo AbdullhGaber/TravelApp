@@ -1,27 +1,13 @@
 package com.example.travelapp.notification
 
-
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.media.AudioAttributes
-import android.media.RingtoneManager
-import android.provider.Settings
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
 import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
 import com.example.data.uitls.Constants.TRIP_ID_KEY
 import com.example.data.uitls.Constants.TRIP_NAME_KEY
 import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
 import com.example.domain.repositories.trip.NotificationHandler
-import com.example.travelapp.MainActivity
-import com.example.travelapp.R
-import com.example.travelapp.utils.hasPostNotificationPermission
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -29,89 +15,20 @@ import javax.inject.Inject
 class NotificationHandlerImpl  @Inject constructor(
     @ApplicationContext val mContext : Context
 ) : NotificationHandler {
-    @SuppressLint("MissingPermission")
-    override fun showTripReminderNotification(
-        tripName: String,
-        tripStartDes: String,
-        tripEndDes: String,
-    ) {
-        val intent = Intent(mContext,MainActivity::class.java).also{
-            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            it.putExtra(SHOW_TRIP_REMINDER_KEY,true)
-            it.putExtra(TRIP_NAME_KEY,tripName)
-            it.putExtra(TRIP_START_DESTINATION_KEY,tripStartDes)
-            it.putExtra(TRIP_END_DESTINATION_KEY,tripEndDes)
-        }
-
-        val pendingIntent = PendingIntent.getActivity(
-            mContext,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        createNotificationChannel(mContext)
-
-        val notificationBuilder = NotificationCompat.Builder(mContext,"trip_reminder_channel")
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        val notification = notificationBuilder
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(mContext.getString(R.string.trip_reminder))
-            .setContentText(mContext.getString(R.string.it_s_time_for_your_trip) + tripName)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(false)
-            .setOnlyAlertOnce(false)
-            .setTimeoutAfter(10000)
-            .setSound(soundUri)  // Use the system's default alarm sound
-            .setVibrate(longArrayOf(0, 500, 1000)) // Vibration pattern
-            .setDefaults(NotificationCompat.DEFAULT_LIGHTS or NotificationCompat.DEFAULT_VIBRATE)
-            .build()
-
-
-        if (hasPostNotificationPermission(mContext)) {
-            NotificationManagerCompat.from(mContext).notify(System.currentTimeMillis().toInt(), notification)
-            sendShowDialogIntentToMainActivity(tripName, tripStartDes, tripEndDes)
-        }
-    }
-
-    private fun sendShowDialogIntentToMainActivity(
+    override fun startService(
+        tripId: String,
         tripName: String,
         tripStartDes: String,
         tripEndDes: String,
     ){
-        // Send an intent to MainActivity to open the dialog
-        val mainIntent = Intent(mContext, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val serviceIntent = Intent(mContext, TripReminderForegroundService::class.java).apply {
             putExtra(SHOW_TRIP_REMINDER_KEY, true)
+            putExtra(TRIP_ID_KEY,tripId)
             putExtra(TRIP_NAME_KEY,tripName)
             putExtra(TRIP_START_DESTINATION_KEY,tripStartDes)
             putExtra(TRIP_END_DESTINATION_KEY,tripEndDes)
         }
-        mContext.startActivity(mainIntent)
-    }
 
-    private fun createNotificationChannel(context: Context) {
-        val channelId = "trip_reminder_channel"
-        val channelName = "Trip Reminders"
-        val channelDescription = "Notifications to remind you about your trips"
-        val importance = NotificationManager.IMPORTANCE_HIGH
-
-        val channel = NotificationChannel(channelId, channelName, importance).apply {
-            description = channelDescription
-            enableLights(true)
-            lightColor = Color.RED
-            enableVibration(true)
-            vibrationPattern = longArrayOf(0, 500, 1000)  // Vibration pattern
-            setSound(Settings.System.DEFAULT_ALARM_ALERT_URI, AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-            )  // Set default alarm sound
-        }
-
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-
-        notificationManager.createNotificationChannel(channel)
+        mContext.startForegroundService(serviceIntent)
     }
 }
