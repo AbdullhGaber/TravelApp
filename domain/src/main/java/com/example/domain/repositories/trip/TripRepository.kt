@@ -1,5 +1,6 @@
 package com.example.domain.repositories.trip
 
+import androidx.annotation.IntRange
 import com.example.domain.entity.TripEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -24,6 +25,8 @@ interface TripRepository {
     )
 
     fun getScheduledTrips() : Flow<List<TripEntity>>
+
+    suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value : Int)
 }
 
 interface TripRemoteDataSource{
@@ -53,6 +56,8 @@ interface TripOfflineDataSource{
     suspend fun addTrip(trip: TripEntity)
 
     fun getScheduledTrips() : Flow<List<TripEntity>>
+
+    suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value : Int)
 }
 
 fun interface TripNotificationScheduler {
@@ -60,7 +65,8 @@ fun interface TripNotificationScheduler {
 }
 
 fun interface NotificationHandler {
-    fun showTripReminderNotification(
+    fun startService(
+        tripId: String,
         tripName: String,
         tripStartDes: String,
         tripEndDes: String,
