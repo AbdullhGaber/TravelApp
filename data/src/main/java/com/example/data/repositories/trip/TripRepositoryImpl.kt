@@ -1,21 +1,24 @@
 package com.example.data.repositories.trip
 
+import android.content.Context
 import androidx.annotation.IntRange
+import com.example.data.uitls.NetworkUtil
 import com.example.domain.entity.TripEntity
 import com.example.domain.repositories.trip.TripOfflineDataSource
 import com.example.domain.repositories.trip.TripRemoteDataSource
 import com.example.domain.repositories.trip.TripRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class TripRepositoryImpl @Inject constructor(
     private val mTripRemoteDataSource: TripRemoteDataSource,
-    private val mTripOfflineDataSource: TripOfflineDataSource
+    private val mTripOfflineDataSource: TripOfflineDataSource,
+    @ApplicationContext private val mContext: Context
 ) : TripRepository {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
@@ -24,7 +27,19 @@ class TripRepositoryImpl @Inject constructor(
         onSuccess : (List<TripEntity>?) -> Unit,
         onFailure : (Throwable) -> Unit
     ) {
-         mTripRemoteDataSource.getTrips(uid, onSuccess, onFailure)
+        if(NetworkUtil.isDeviceConnected(mContext)){
+            mTripRemoteDataSource.getTrips(
+                uid = uid,
+                onSuccess = onSuccess,
+                onFailure = onFailure
+            )
+        }else {
+            coroutineScope.launch {
+                mTripOfflineDataSource.getTrips().collect {
+                    onSuccess(it)
+                }
+            }
+        }
     }
 
     override fun addTrip(
