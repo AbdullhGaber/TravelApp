@@ -74,4 +74,8 @@
     <string name="pick_a_date">Pick a Date</string>
     <string name="date_field_is_required">Date field is required!</string>
     <string name="later">Later</string>
+    <string name="trip_deleted_successfully">Trip deleted successfully</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="trip_undo_successfully">Trip undo successfully</string>
+    <string name="undo">undo</string>
 </resources>

@@ -75,4 +75,8 @@
     <string name="pick_a_date">اختر التاريخ</string>
     <string name="date_field_is_required">يجب اختيار تاريخ</string>
     <string name="later">لاحقاً</string>
+    <string name="trip_deleted_successfully">تم حذف الرحلة بنجاح</string>
+    <string name="something_went_wrong">حدث خطأ ما</string>
+    <string name="trip_undo_successfully">تم التراجع عن حذف الرحلة بنجاح</string>
+    <string name="undo">تراجع</string>
 </resources>
