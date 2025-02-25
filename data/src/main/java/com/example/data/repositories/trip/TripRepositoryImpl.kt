@@ -5,7 +5,11 @@ import com.example.domain.entity.TripEntity
 import com.example.domain.repositories.trip.TripOfflineDataSource
 import com.example.domain.repositories.trip.TripRemoteDataSource
 import com.example.domain.repositories.trip.TripRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -13,6 +17,8 @@ class TripRepositoryImpl @Inject constructor(
     private val mTripRemoteDataSource: TripRemoteDataSource,
     private val mTripOfflineDataSource: TripOfflineDataSource
 ) : TripRepository {
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
+
     override fun getTrips(
         uid : String,
         onSuccess : (List<TripEntity>?) -> Unit,
@@ -27,7 +33,7 @@ class TripRepositoryImpl @Inject constructor(
         onFailure: (Throwable) -> Unit,
     ) {
         mTripRemoteDataSource.addTrip(trip, onSuccess = {
-            runBlocking {
+            coroutineScope.launch {
                 mTripOfflineDataSource.addTrip(trip)
                 onSuccess()
             }
@@ -49,5 +55,24 @@ class TripRepositoryImpl @Inject constructor(
 
     override suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value : Int){
         mTripOfflineDataSource.updateTripHasTimeCome(id, value)
+    }
+
+    override fun deleteTrip(
+        tripId : String,
+        uid:String,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
+    ) {
+        mTripRemoteDataSource.deleteTrip(
+            tripId = tripId,
+            uid = uid,
+            onSuccess = {
+                onSuccess()
+                coroutineScope.launch {
+                    mTripOfflineDataSource.deleteTrip(tripId, uid, onSuccess, onFailure)
+                }
+            },
+            onFailure = onFailure
+        )
     }
 }

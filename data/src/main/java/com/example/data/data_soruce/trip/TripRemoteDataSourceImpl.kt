@@ -77,4 +77,24 @@ class TripRemoteDataSourceImpl @Inject constructor(
             Log.e("FIB FireStore Repo","Error : ${it.message}")
         }
     }
+
+    override fun deleteTrip(
+        tripId: String,
+        uid: String,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        val tripDocRef = mFireStore.
+        collection(USER_COLLECTION).
+        document(uid).
+        collection(TripEntity.TRIP_COLLECTION).document(tripId)
+
+        tripDocRef.delete().addOnSuccessListener {
+            onSuccess()
+            Log.e("FIB Firestore Repo","trip deleted successfully")
+        }.addOnFailureListener {
+            onFailure(it)
+            Log.e("FIB Firestore Repo","Error : ${it.message}")
+        }
+    }
 }

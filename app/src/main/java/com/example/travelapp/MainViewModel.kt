@@ -43,6 +43,8 @@ class MainViewModel @Inject constructor(
                 clearScheduledTripFlowState()
                 updateHasTimeComeInTrip(event.id, event.value)
             }
+
+            is UpcomingEvents.OnTripCardDeleteClick -> Unit
         }
     }
     private fun updateHasTimeComeInTrip(id : String, @IntRange(0,1) value : Int){

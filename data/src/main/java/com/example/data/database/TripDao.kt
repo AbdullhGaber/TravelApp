@@ -2,6 +2,7 @@ package com.example.data.database
 
 import androidx.annotation.IntRange
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.data.model.TripModel
@@ -20,5 +21,8 @@ interface TripDao {
 
     @Insert
     suspend fun addTrip(tripModel: TripModel)
+
+    @Query("DELETE FROM trips WHERE id = :tripId")
+    suspend fun deleteTrip(tripId: String)
 
 }

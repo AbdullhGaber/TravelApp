@@ -2,6 +2,7 @@ package com.example.travelapp.screens.upcoming
 
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,8 +99,22 @@ fun UpcomingScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+
+                val context = LocalContext.current
+
+                LaunchedEffect(Unit){
+                    viewModel.sharedTripStateFlow.collect { message ->
+                        if(message.isNotEmpty()){
+                            Toast.makeText(context,message,Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+
                 tripsState.value.data?.let{
                     TripCardList(
+                        onDeleteClick = { tripId,uid ->
+                            viewModel.onEvent(UpcomingEvents.OnTripCardDeleteClick(tripId,uid))
+                        },
                         trips = it
                     )
                 }
@@ -111,8 +127,6 @@ fun UpcomingScreen(
                 if(scheduledTrips.value is Resource.Success){
                     mainViewModel.showTripReminderDialog()
                 }
-
-                val context = LocalContext.current
 
                 if(mainViewModel.getShouldShowTripReminderDialog()){
                     if( scheduledTrips.value.data!!.isNotEmpty()){

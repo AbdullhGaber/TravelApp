@@ -27,6 +27,13 @@ interface TripRepository {
     fun getScheduledTrips() : Flow<List<TripEntity>>
 
     suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value : Int)
+
+    fun deleteTrip(
+        tripId : String,
+        uid:String,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
 }
 
 interface TripRemoteDataSource{
@@ -48,6 +55,13 @@ interface TripRemoteDataSource{
         onSuccess: (TripEntity) -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+     fun deleteTrip(
+        tripId : String,
+        uid: String,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
 }
 
 interface TripOfflineDataSource{
@@ -57,7 +71,14 @@ interface TripOfflineDataSource{
 
     fun getScheduledTrips() : Flow<List<TripEntity>>
 
-    suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value : Int)
+    suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value: Int)
+
+   suspend fun deleteTrip(
+        tripId : String,
+        uid: String,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
 }
 
 fun interface TripNotificationScheduler {

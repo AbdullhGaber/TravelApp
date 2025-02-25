@@ -8,6 +8,7 @@ import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.auth.LoginUseCase
 import com.example.domain.use_cases.auth.RegisterUseCase
 import com.example.domain.use_cases.trip.AddTripUseCase
+import com.example.domain.use_cases.trip.DeleteTripUseCase
 import com.example.domain.use_cases.trip.GetScheduledTrips
 import com.example.domain.use_cases.trip.GetTripByIdUseCase
 import com.example.domain.use_cases.trip.GetTripUseCase
@@ -59,7 +60,8 @@ object UseCasesModule {
             addTripUseCase = AddTripUseCase(tripRepository),
             getTripByIdUseCase = GetTripByIdUseCase(tripRepository),
             getScheduledTrips = GetScheduledTrips(tripRepository),
-            updateTripHasTimeComeUseCase = UpdateTripHasTimeComeUseCase(tripRepository)
+            updateTripHasTimeComeUseCase = UpdateTripHasTimeComeUseCase(tripRepository),
+            deleteTripUseCase = DeleteTripUseCase(tripRepository)
         )
     }
 }
