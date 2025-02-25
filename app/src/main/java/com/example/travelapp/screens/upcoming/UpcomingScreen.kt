@@ -20,10 +20,16 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
+import com.example.domain.entity.TripEntity
 import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.notification.StopReminderReceiver
@@ -45,6 +52,9 @@ import com.example.travelapp.notification.TripReminderForegroundService.Companio
 import com.example.travelapp.screens.common.TripCardList
 import com.example.travelapp.screens.common.TripCardListShimmerEffect
 import com.example.travelapp.screens.common.TripReminderDialog
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -54,8 +64,12 @@ fun UpcomingScreen(
     navigateToAddTrip : () -> Unit = {}
 ){
     val tripsState = viewModel.tripStateFlow.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        },
         containerColor = MaterialTheme.colorScheme.secondary ,
         floatingActionButton = {
             FloatingActionButton(
@@ -71,6 +85,10 @@ fun UpcomingScreen(
             }
         }
     ){ innerPadding ->
+        ObserveShowSnackBar(
+            viewModel = viewModel,
+            snackBarHostState = snackBarHostState
+        )
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)){
@@ -99,21 +117,12 @@ fun UpcomingScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-
                 val context = LocalContext.current
-
-                LaunchedEffect(Unit){
-                    viewModel.sharedTripStateFlow.collect { message ->
-                        if(message.isNotEmpty()){
-                            Toast.makeText(context,message,Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
 
                 tripsState.value.data?.let{
                     TripCardList(
-                        onDeleteClick = { tripId,uid ->
-                            viewModel.onEvent(UpcomingEvents.OnTripCardDeleteClick(tripId,uid))
+                        onDeleteClick = { trip ->
+                            viewModel.onEvent(UpcomingEvents.OnTripCardDeleteClick(trip))
                         },
                         trips = it
                     )
@@ -157,6 +166,32 @@ fun UpcomingScreen(
             }
         }
     }
+}
+
+@Composable
+fun ObserveShowSnackBar(
+    viewModel: UpcomingViewModel,
+    snackBarHostState: SnackbarHostState,
+){
+    val context = LocalContext.current
+    LaunchedEffect(true){
+            viewModel.sharedTripStateFlow.distinctUntilChanged().collect{ message ->
+                val action = if(message == context.getString(R.string.trip_deleted_successfully)) "DELETE" else "ANOTHER ACTION"
+                val snackBarResult = snackBarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = setSnackBarActionLabel(action),
+                    duration = SnackbarDuration.Short
+                )
+                if (snackBarResult == SnackbarResult.ActionPerformed && action == "DELETE") {
+                    val lastDeletedTrip = viewModel.lastDeletedTripStateFlow.value
+                    viewModel.onEvent(UpcomingEvents.OnUndoDeleteClick(lastDeletedTrip))
+                }
+            }
+    }
+}
+
+private fun setSnackBarActionLabel(action : String) : String{
+    return if(action == "DELETE") "undo" else "ok"
 }
 
 @Composable

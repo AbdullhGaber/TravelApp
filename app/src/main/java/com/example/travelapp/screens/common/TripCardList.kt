@@ -17,7 +17,7 @@ fun TripCardList(
     trips : List<TripEntity> = emptyList(),
     onAddNotesClick : () -> Unit = {},
     onEditClick : () -> Unit = {},
-    onDeleteClick : (tripId : String,uid : String) -> Unit = {s1,s2->},
+    onDeleteClick : (trip : TripEntity) -> Unit = {},
     onCancelClick : () -> Unit = {},
 ){
     LazyColumn(
@@ -30,7 +30,7 @@ fun TripCardList(
                 onAddNotesClick = onAddNotesClick,
                 onEditClick = onEditClick,
                 onDeleteClick = {
-                    onDeleteClick(it.id!!,it.uid)
+                    onDeleteClick(it)
                 },
                 onCancelClick = onCancelClick,
             )
