@@ -2,7 +2,6 @@ package com.example.travelapp.screens.upcoming
 
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,18 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
-import com.example.domain.entity.TripEntity
 import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.notification.StopReminderReceiver
-import com.example.travelapp.notification.TripReminderForegroundService
 import com.example.travelapp.notification.TripReminderForegroundService.Companion.STOP_ACTION
 import com.example.travelapp.screens.common.TripCardList
 import com.example.travelapp.screens.common.TripCardListShimmerEffect
 import com.example.travelapp.screens.common.TripReminderDialog
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 
 
 @Composable
