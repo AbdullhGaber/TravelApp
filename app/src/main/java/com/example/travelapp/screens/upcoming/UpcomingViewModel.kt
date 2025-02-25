@@ -48,7 +48,6 @@ class UpcomingViewModel @Inject constructor(
             }
         }
     }
-
     private fun undoDeleteTrip(trip : TripEntity){
         mTripUseCases.addTripUseCase(
             trip = trip,
@@ -56,6 +55,7 @@ class UpcomingViewModel @Inject constructor(
                 viewModelScope.launch {
                     _sharedTripStateFlow.emit(mContext.getString(R.string.trip_undo_successfully))
                 }
+                mTripUseCases.scheduleTripNotificationUseCase(trip)
             },
             onFailure = {
                 viewModelScope.launch {
@@ -74,6 +74,7 @@ class UpcomingViewModel @Inject constructor(
                     _sharedTripStateFlow.emit(mContext.getString(R.string.trip_deleted_successfully))
                     _lastDeletedTripStateFlow.emit(trip)
                 }
+                mTripUseCases.cancelScheduleTripNotificationUseCase(trip)
             },
             onFailure = {
                 viewModelScope.launch {

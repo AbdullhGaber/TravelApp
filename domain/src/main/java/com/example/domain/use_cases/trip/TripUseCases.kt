@@ -7,5 +7,6 @@ data class TripUseCases(
     val getTripByIdUseCase: GetTripByIdUseCase,
     val getScheduledTrips: GetScheduledTrips,
     val updateTripHasTimeComeUseCase: UpdateTripHasTimeComeUseCase,
-    val deleteTripUseCase: DeleteTripUseCase
+    val deleteTripUseCase: DeleteTripUseCase,
+    val cancelScheduleTripNotificationUseCase: CancelScheduleTripNotificationUseCase
 )

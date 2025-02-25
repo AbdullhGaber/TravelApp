@@ -81,8 +81,9 @@ interface TripOfflineDataSource{
     )
 }
 
-fun interface TripNotificationScheduler {
+interface TripNotificationScheduler {
     fun schedule(trip: TripEntity)
+    fun cancelTripSchedule(trip: TripEntity)
 }
 
 fun interface NotificationHandler {

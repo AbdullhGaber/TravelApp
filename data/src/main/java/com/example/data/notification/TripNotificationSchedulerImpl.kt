@@ -47,4 +47,22 @@ class TripNotificationSchedulerImpl @Inject constructor(
             )
         }
     }
+
+    override fun cancelTripSchedule(trip: TripEntity) {
+        val alarmManager = mContext.getSystemService(AlarmManager::class.java)
+
+        val intent = Intent(mContext, TripReminderReceiver::class.java)
+            .apply {
+                data = Uri.parse("trip://reminder/${trip.id}")
+            }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            mContext,
+            0 ,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.cancel(pendingIntent)
+    }
 }
