@@ -45,6 +45,8 @@ class MainViewModel @Inject constructor(
             }
 
             is UpcomingEvents.OnTripCardDeleteClick -> Unit
+
+            is UpcomingEvents.OnUndoDeleteClick -> Unit
         }
     }
     private fun updateHasTimeComeInTrip(id : String, @IntRange(0,1) value : Int){
