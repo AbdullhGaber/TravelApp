@@ -1,5 +1,6 @@
 package com.example.travelapp.screens.upcoming.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.entity.TripEntity
 import com.example.travelapp.R
-
+import com.example.travelapp.ui.theme.TravelAppTheme
 
 
 @Composable
@@ -208,7 +209,7 @@ fun TripDetailsCollapsingMenu(
                 ){
                     Icon(
                         painter = painterResource(id = R.drawable.map_ic),
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = stringResource(
                             id = R.string.map_icon
                         )
@@ -285,7 +286,7 @@ fun TripOptionMenu(
 fun UnfilledCircle(
     size: Int = 15,
     borderThickness: Int = 2,
-    borderColor: Color = MaterialTheme.colorScheme.primary,
+    borderColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
 ) {
     Box(
         modifier = Modifier
@@ -302,7 +303,9 @@ fun UnfilledCircle(
 }
 
 @Composable
-@Preview()
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreviewTripCard(){
-    TripCard()
+    TravelAppTheme {
+        TripCard()
+    }
 }
