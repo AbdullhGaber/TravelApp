@@ -48,7 +48,7 @@ import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.trips.add.components.AddTripForm
 import com.example.travelapp.screens.common.ScreenHeaderImage
 import com.example.travelapp.screens.common.TripTypeDropDownMenu
-import com.example.travelapp.screens.common.TripTypeForm
+import com.example.travelapp.screens.trips.add.components.TripTypeForm
 import com.example.travelapp.ui.theme.TravelAppTheme
 import com.example.travelapp.utils.hasPostNotificationPermission
 import com.example.travelapp.utils.shouldShowPostNotificationRequestPermissionRationale

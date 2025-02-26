@@ -1,4 +1,4 @@
-package com.example.travelapp.screens.common
+package com.example.travelapp.screens.trips.add.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +11,8 @@ import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.localTimeToText
 import com.example.data.mapper.textToLocalDate
 import com.example.travelapp.R
+import com.example.travelapp.screens.common.PickDateField
+import com.example.travelapp.screens.common.PickTimeField
 import com.example.travelapp.screens.trips.add.AddTripViewModel
 
 
