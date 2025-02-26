@@ -61,7 +61,7 @@ class AddTripViewModel @Inject constructor(
 
     fun onEvent(event : TripEvents){
         when (event){
-            is TripEvents.SaveTrip -> {
+            is TripEvents.OnSaveButtonClick -> {
                 saveTrip()
             }
         }

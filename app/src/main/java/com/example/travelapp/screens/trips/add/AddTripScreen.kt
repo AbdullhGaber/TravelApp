@@ -12,7 +12,6 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -158,7 +157,7 @@ private fun AddTripContent(
                     }
                     return@PrimaryButton
                 }
-                viewModel.onEvent(TripEvents.SaveTrip)
+                viewModel.onEvent(TripEvents.OnSaveButtonClick)
             },
             text = stringResource(id = R.string.add)
         )
