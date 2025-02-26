@@ -1,4 +1,4 @@
-package com.example.travelapp.screens.trips.add.components
+package com.example.travelapp.screens.common
 
 
 import androidx.compose.foundation.layout.fillMaxWidth

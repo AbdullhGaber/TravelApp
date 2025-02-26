@@ -18,6 +18,8 @@ import com.example.data.mapper.localDateToMillis
 import com.example.data.mapper.localTimeToText
 import com.example.data.mapper.textToLocalDate
 import com.example.travelapp.R
+import com.example.travelapp.screens.common.PickDateField
+import com.example.travelapp.screens.common.PickTimeField
 import com.example.travelapp.screens.common.TripTextField
 import com.example.travelapp.screens.trips.add.AddTripViewModel
 
