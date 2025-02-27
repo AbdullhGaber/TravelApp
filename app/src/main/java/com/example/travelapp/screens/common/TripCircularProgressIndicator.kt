@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 fun TripCircularProgressIndicator(modifier: Modifier){
     CircularProgressIndicator(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
         strokeWidth = 4.dp
     )
 }
