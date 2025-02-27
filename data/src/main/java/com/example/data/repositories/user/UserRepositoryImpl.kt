@@ -41,11 +41,11 @@ class UserRepositoryImpl @Inject constructor(
     ){
         if(NetworkUtil.isDeviceConnected(mContext)){
             mUserRemoteDataSource.getUser(uid, onSuccess, onFailure)
-        }
-
-        runBlocking{
-            val user = mUserOfflineDataSource.getUser(uid)
-            user?.let{ onSuccess(it)}
+        }else{
+            runBlocking{
+                val user = mUserOfflineDataSource.getUser(uid)
+                user?.let{ onSuccess(it)}
+            }
         }
     }
 

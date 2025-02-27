@@ -13,26 +13,4 @@ import javax.inject.Inject
 @HiltViewModel
 class NavigatorViewModel @Inject constructor(
     private val mLocalUserManager : LocalUserManager,
-    private val mUserUserUseCases: UserUseCases
-) : ViewModel() {
-    init{
-        viewModelScope.launch {
-            mLocalUserManager.getUserUID().collect{ uid ->
-                uid?.let{getUser(uid)}
-            }
-        }
-    }
-
-    private fun getUser(uid : String){
-        mUserUserUseCases.getUserUseCase(
-            uid = uid,
-            onSuccess = { user ->
-                DataUtil.tripUser = user
-                Log.e("DataStore","User found successfully with uid : $uid")
-            },
-            onFailure = {
-                Log.e("DataStore Error","No user found")
-            }
-        )
-    }
-}
+) : ViewModel() {}

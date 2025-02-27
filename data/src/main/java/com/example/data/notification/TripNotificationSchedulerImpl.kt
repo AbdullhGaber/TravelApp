@@ -1,0 +1,68 @@
+package com.example.data.notification
+
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
+import com.example.data.uitls.Constants.TRIP_ID_KEY
+import com.example.data.uitls.Constants.TRIP_NAME_KEY
+import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
+import com.example.data.uitls.formatTimeDate
+import com.example.domain.entity.TripEntity
+import com.example.domain.repositories.trip.TripNotificationScheduler
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+
+class TripNotificationSchedulerImpl @Inject constructor(
+    @ApplicationContext private val mContext : Context
+): TripNotificationScheduler {
+    override fun schedule(trip: TripEntity) {
+        val alarmManager = mContext.getSystemService(AlarmManager::class.java)
+
+        val intent = Intent(mContext, TripReminderReceiver::class.java)
+            .apply {
+                putExtra(TRIP_ID_KEY , trip.id)
+                putExtra(TRIP_NAME_KEY , trip.name)
+                putExtra(TRIP_START_DESTINATION_KEY , trip.startDestination)
+                putExtra(TRIP_END_DESTINATION_KEY , trip.endDestination)
+                data = Uri.parse("trip://reminder/${trip.id}")
+            }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            mContext,
+          0 ,
+           intent,
+           PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val triggerTime = formatTimeDate(time = trip.time, date = trip.date)?.time
+
+        triggerTime?.let{
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                it,
+                pendingIntent
+            )
+        }
+    }
+
+    override fun cancelTripSchedule(trip: TripEntity) {
+        val alarmManager = mContext.getSystemService(AlarmManager::class.java)
+
+        val intent = Intent(mContext, TripReminderReceiver::class.java)
+            .apply {
+                data = Uri.parse("trip://reminder/${trip.id}")
+            }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            mContext,
+            0 ,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.cancel(pendingIntent)
+    }
+}
