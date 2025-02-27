@@ -97,4 +97,23 @@ class TripRemoteDataSourceImpl @Inject constructor(
             Log.e("FIB Firestore Repo","Error : ${it.message}")
         }
     }
+
+    override fun updateTrip(
+        trip: TripEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        val tripDocRef = mFireStore.
+        collection(USER_COLLECTION).
+        document(trip.uid).
+        collection(TripEntity.TRIP_COLLECTION).document(trip.id!!)
+
+        tripDocRef.set(trip).addOnSuccessListener {
+            onSuccess()
+            Log.e("FIB Firestore Repo","trip updated successfully")
+        }.addOnFailureListener {
+            onFailure(it)
+            Log.e("FIB Firestore Repo","Error : ${it.message}")
+        }
+    }
 }

@@ -5,7 +5,9 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.data.model.TripModel
+import com.example.domain.entity.TripEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,5 +26,11 @@ interface TripDao {
 
     @Query("DELETE FROM trips WHERE id = :tripId")
     suspend fun deleteTrip(tripId: String)
+
+    @Query("SELECT * FROM trips WHERE id = :tripId")
+    fun getTripById(tripId : String) : Flow<TripModel?>
+
+    @Update
+    suspend fun updateTrip(tripModel: TripModel)
 
 }

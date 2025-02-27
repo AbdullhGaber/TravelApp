@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
+import com.example.domain.entity.TripEntity
 import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.notification.StopReminderReceiver
@@ -55,7 +56,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun UpcomingScreen(
     viewModel: UpcomingViewModel = hiltViewModel(),
     mainViewModel : MainViewModel,
-    navigateToAddTrip : () -> Unit = {}
+    navigateToAddTrip : () -> Unit = {},
+    navigateToEditTrip : (TripEntity) -> Unit = {},
 ){
     val tripsState = viewModel.tripStateFlow.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -117,6 +119,9 @@ fun UpcomingScreen(
                     TripCardList(
                         onDeleteClick = { trip ->
                             viewModel.onEvent(UpcomingEvents.OnTripCardDeleteClick(trip))
+                        },
+                        onEditClick = {trip ->
+                            navigateToEditTrip(trip)
                         },
                         trips = it
                     )

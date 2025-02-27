@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -46,6 +47,34 @@ class TripOfflineDataSourceImpl @Inject constructor(
         }catch (e : Exception){
             onFailure(e)
             Log.e("Trip Offline Data Source" , "Error : ${e.message}")
+        }
+    }
+
+    override suspend fun getTripById(
+        id: String,
+        onSuccess: (TripEntity) -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        try {
+            val trip = mTripDao.getTripById(id).last()?.toEntity()?: TripEntity()
+            onSuccess(trip)
+            Log.e("Trip Offline Data Source" , "Trip selected by id successfully")
+        }catch (e : Exception){
+            onFailure(e)
+            Log.e("Trip Offline Data Source" , "Error : ${e.message}")
+        }
+    }
+
+    override suspend fun updateTrip(
+        trip: TripEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        try {
+            mTripDao.updateTrip(trip.toModel())
+            onSuccess()
+        }catch (e : Exception){
+            onFailure(e)
         }
     }
 }

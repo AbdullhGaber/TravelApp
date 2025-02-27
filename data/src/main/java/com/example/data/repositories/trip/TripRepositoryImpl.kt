@@ -61,7 +61,22 @@ class TripRepositoryImpl @Inject constructor(
         onSuccess: (TripEntity) -> Unit,
         onFailure: (Throwable) -> Unit,
     ){
-        mTripRemoteDataSource.getTripById(id, uid, onSuccess, onFailure)
+        if(NetworkUtil.isDeviceConnected(mContext)){
+            mTripRemoteDataSource.getTripById(
+                id = id,
+                uid = uid,
+                onSuccess = onSuccess,
+                onFailure = onFailure
+            )
+        }else{
+            coroutineScope.launch {
+                mTripOfflineDataSource.getTripById(
+                    id = id,
+                    onSuccess = onSuccess,
+                    onFailure = onFailure
+                )
+            }
+        }
     }
 
     override fun getScheduledTrips(): Flow<List<TripEntity>> {
@@ -85,6 +100,26 @@ class TripRepositoryImpl @Inject constructor(
                 onSuccess()
                 coroutineScope.launch {
                     mTripOfflineDataSource.deleteTrip(tripId, uid, onSuccess, onFailure)
+                }
+            },
+            onFailure = onFailure
+        )
+    }
+
+    override fun updateTrip(
+        trip: TripEntity,
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        mTripRemoteDataSource.updateTrip(
+            trip = trip,
+            onSuccess = {
+                coroutineScope.launch {
+                    mTripOfflineDataSource.updateTrip(
+                        trip = trip,
+                        onSuccess = onSuccess,
+                        onFailure = onFailure
+                    )
                 }
             },
             onFailure = onFailure

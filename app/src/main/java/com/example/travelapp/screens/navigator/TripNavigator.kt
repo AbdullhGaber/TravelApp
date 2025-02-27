@@ -41,9 +41,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.data.uitls.DataUtil
@@ -54,6 +56,8 @@ import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.navigator.components.NavItems
 import com.example.travelapp.screens.trips.add.AddTripScreen
 import com.example.travelapp.screens.trips.add.AddTripViewModel
+import com.example.travelapp.screens.trips.edit.EditTripScreen
+import com.example.travelapp.screens.trips.edit.EditTripViewModel
 import com.example.travelapp.screens.upcoming.UpcomingScreen
 import com.example.travelapp.ui.theme.LightGray
 import java.io.File
@@ -85,6 +89,9 @@ fun TripNavigator(
                     mainViewModel = mainViewModel,
                     navigateToAddTrip = {
                         navController.navigate(Route.AddTripScreen.route)
+                    },
+                    navigateToEditTrip = { trip ->
+                        navController.navigate(Route.EditTripScreen.route+"/${trip.id}/${trip.uid}")
                     }
                 )
             }
@@ -98,6 +105,26 @@ fun TripNavigator(
                     navigateUp = {
                         navController.navigateUp()
                     }
+                )
+            }
+
+            composable(
+                route = Route.EditTripScreen.route+"/{tripId}/{uid}",
+                arguments = listOf(
+                    navArgument("tripId") { type = NavType.StringType },
+                    navArgument("uid") { type = NavType.StringType }
+                )
+            ){
+                val tripId = it.arguments?.getString("tripId")
+                val tripUid = it.arguments?.getString("uid")
+                val viewModel : EditTripViewModel = hiltViewModel()
+                EditTripScreen(
+                    viewModel,
+                    navigateUp = {
+                        navController.navigateUp()
+                    },
+                    tripId = tripId!!,
+                    uid = tripUid!!
                 )
             }
         }

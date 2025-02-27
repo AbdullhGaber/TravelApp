@@ -34,6 +34,12 @@ interface TripRepository {
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+    fun updateTrip(
+        trip: TripEntity,
+        onSuccess : () -> Unit,
+        onFailure : (Throwable) -> Unit
+    )
 }
 
 interface TripRemoteDataSource{
@@ -62,6 +68,12 @@ interface TripRemoteDataSource{
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
     )
+
+    fun updateTrip(
+        trip: TripEntity,
+        onSuccess : () -> Unit,
+        onFailure : (Throwable) -> Unit
+    )
 }
 
 interface TripOfflineDataSource{
@@ -73,11 +85,23 @@ interface TripOfflineDataSource{
 
     suspend fun updateTripHasTimeCome(id: String, @IntRange(0,1) value: Int)
 
-   suspend fun deleteTrip(
+    suspend fun deleteTrip(
         tripId : String,
         uid: String,
         onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit
+    )
+
+    suspend fun getTripById(
+        id : String,
+        onSuccess: (TripEntity) -> Unit,
+        onFailure: (Throwable) -> Unit
+    )
+
+    suspend fun updateTrip(
+        trip: TripEntity,
+        onSuccess : () -> Unit,
+        onFailure : (Throwable) -> Unit
     )
 }
 

@@ -16,7 +16,7 @@ import com.example.travelapp.ui.theme.TravelAppTheme
 fun TripCardList(
     trips : List<TripEntity> = emptyList(),
     onAddNotesClick : () -> Unit = {},
-    onEditClick : () -> Unit = {},
+    onEditClick : (TripEntity) -> Unit = {},
     onDeleteClick : (trip : TripEntity) -> Unit = {},
     onCancelClick : () -> Unit = {},
 ){
@@ -28,7 +28,9 @@ fun TripCardList(
                 modifier = Modifier.padding(vertical  = 10.dp),
                 trip = it,
                 onAddNotesClick = onAddNotesClick,
-                onEditClick = onEditClick,
+                onEditClick = {
+                    onEditClick(it)
+                },
                 onDeleteClick = {
                     onDeleteClick(it)
                 },
