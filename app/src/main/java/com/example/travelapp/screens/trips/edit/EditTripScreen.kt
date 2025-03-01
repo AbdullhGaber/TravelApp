@@ -45,7 +45,7 @@ fun EditTripScreen(
    Column(
        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
    ){
-       ScreenHeaderImage()
+       ScreenHeaderImage(R.drawable.add_trip_header)
        Spacer(Modifier.height(8.dp))
 
        val trip by viewModel.tripState
