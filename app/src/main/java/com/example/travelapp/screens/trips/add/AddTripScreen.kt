@@ -103,7 +103,7 @@ private fun AddTripContent(
             .background(MaterialTheme.colorScheme.secondary)
             .verticalScroll(scrollState)
     ) {
-        ScreenHeaderImage()
+        ScreenHeaderImage(R.drawable.add_trip_header)
 
         Spacer(modifier = Modifier.height(32.dp))
 

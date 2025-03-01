@@ -1,5 +1,6 @@
 package com.example.travelapp.screens.common
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.example.travelapp.R
 
 @Composable
-fun ScreenHeaderImage() {
+fun ScreenHeaderImage(
+    @DrawableRes headerImagePainterId : Int
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,7 +31,7 @@ fun ScreenHeaderImage() {
         Image(
             modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop,
-            painter = painterResource(id = R.drawable.add_trip_header),
+            painter = painterResource(id = headerImagePainterId),
             contentDescription = stringResource(R.string.add_trip_screen_header)
         )
 
