@@ -11,5 +11,5 @@ sealed class Route(val route : String) {
     data object HistoryMapScreen : Route("historyMapScreen")
     data object AddTripScreen : Route("addTripScreen")
     data object EditTripScreen : Route("editTripScreen")
-
+    data object NoteScreen : Route("noteScreen")
 }

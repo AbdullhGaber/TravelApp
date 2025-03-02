@@ -38,4 +38,11 @@ class DatabaseModule {
     ): TripDao{
         return travelDB.tripDao
     }
+
+    @Provides
+    fun provideNoteDao(
+        travelDB : TravelRoomDatabase
+    ): NoteDao{
+        return travelDB.noteDao
+    }
 }
