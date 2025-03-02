@@ -9,6 +9,7 @@ import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.auth.LoginUseCase
 import com.example.domain.use_cases.auth.RegisterUseCase
 import com.example.domain.use_cases.note.AddNoteUseCase
+import com.example.domain.use_cases.note.GetNotesUseCase
 import com.example.domain.use_cases.note.NoteUseCases
 import com.example.domain.use_cases.trip.AddTripUseCase
 import com.example.domain.use_cases.trip.CancelScheduleTripNotificationUseCase
@@ -77,7 +78,8 @@ object UseCasesModule {
         noteRepository: NoteRepository
     ) : NoteUseCases{
         return NoteUseCases(
-            addNoteUseCase = AddNoteUseCase(noteRepository)
+            addNoteUseCase = AddNoteUseCase(noteRepository),
+            getNotesUseCase = GetNotesUseCase(noteRepository)
         )
     }
 }

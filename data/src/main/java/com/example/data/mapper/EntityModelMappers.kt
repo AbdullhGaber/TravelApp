@@ -83,7 +83,8 @@ fun NoteEntity.toModel() : NoteModel{
     return NoteModel(
         text = text,
         uid = uid,
-        tripId = tripId
+        tripId = tripId,
+        addedTime = addedTime
     )
 }
 
@@ -91,6 +92,7 @@ fun NoteModel.toEntity() : NoteEntity{
     return NoteEntity(
         text = text,
         uid = uid,
-        tripId = tripId
+        tripId = tripId,
+        addedTime = addedTime
     )
 }
