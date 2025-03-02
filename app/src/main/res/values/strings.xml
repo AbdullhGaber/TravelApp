@@ -78,4 +78,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="trip_undo_successfully">Trip undo successfully</string>
     <string name="undo">undo</string>
+    <string name="my_notes">My Notes</string>
+    <string name="note_added_successfully">Note Added Successfully</string>
+    <string name="add_note">Add Note</string>
 </resources>
