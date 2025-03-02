@@ -79,4 +79,7 @@
     <string name="something_went_wrong">حدث خطأ ما</string>
     <string name="trip_undo_successfully">تم التراجع عن حذف الرحلة بنجاح</string>
     <string name="undo">تراجع</string>
+    <string name="my_notes">My Notes</string>
+    <string name="note_added_successfully">Note Added Successfully</string>
+    <string name="add_note">Add Note</string>
 </resources>

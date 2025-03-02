@@ -21,7 +21,8 @@ import com.example.travelapp.R
 
 @Composable
 fun ScreenHeaderImage(
-    @DrawableRes headerImagePainterId : Int
+    @DrawableRes headerImagePainterId : Int,
+    title : String = stringResource(R.string.let_s_go)
 ) {
     Box(
         modifier = Modifier
@@ -39,7 +40,7 @@ fun ScreenHeaderImage(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp),
-            text = stringResource(R.string.let_s_go),
+            text = title,
             color = Color.White,
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold

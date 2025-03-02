@@ -58,6 +58,7 @@ fun UpcomingScreen(
     mainViewModel : MainViewModel,
     navigateToAddTrip : () -> Unit = {},
     navigateToEditTrip : (TripEntity) -> Unit = {},
+    navigateToNotesScreen : (String) -> Unit = {},
 ){
     val tripsState = viewModel.tripStateFlow.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -122,6 +123,9 @@ fun UpcomingScreen(
                         },
                         onEditClick = {trip ->
                             navigateToEditTrip(trip)
+                        },
+                        onAddNotesClick = { tripId ->
+                            navigateToNotesScreen(tripId)
                         },
                         trips = it
                     )

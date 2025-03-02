@@ -54,6 +54,7 @@ import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.navigator.components.NavItems
+import com.example.travelapp.screens.notes.NotesScreen
 import com.example.travelapp.screens.trips.add.AddTripScreen
 import com.example.travelapp.screens.trips.add.AddTripViewModel
 import com.example.travelapp.screens.trips.edit.EditTripScreen
@@ -92,6 +93,9 @@ fun TripNavigator(
                     },
                     navigateToEditTrip = { trip ->
                         navController.navigate(Route.EditTripScreen.route+"/${trip.id}/${trip.uid}")
+                    },
+                    navigateToNotesScreen = { tripId ->
+                        navController.navigate(Route.NoteScreen.route+"/$tripId")
                     }
                 )
             }
@@ -125,6 +129,17 @@ fun TripNavigator(
                     },
                     tripId = tripId!!,
                     uid = tripUid!!
+                )
+            }
+
+            composable(
+                route = Route.NoteScreen.route+"/{tripId}",
+                arguments = listOf(navArgument("tripId"){type = NavType.StringType})
+            ){
+                val tripId = it.arguments?.getString("tripId")!!
+                NotesScreen(
+                    tripId = tripId,
+                    navigateUp = {navController.navigateUp()}
                 )
             }
         }

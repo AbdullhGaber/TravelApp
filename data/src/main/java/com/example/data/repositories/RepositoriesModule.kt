@@ -1,15 +1,21 @@
 package com.example.data.repositories
 
 import com.example.data.data_soruce.auth.AuthRemoteDataSourceImpl
+import com.example.data.data_soruce.note.NoteOfflineDataSourceImpl
+import com.example.data.data_soruce.note.NoteRemoteDataSourceImpl
 import com.example.data.data_soruce.trip.TripOfflineDataSourceImpl
 import com.example.data.data_soruce.trip.TripRemoteDataSourceImpl
 import com.example.data.data_soruce.user.UserOfflineDataSourceImpl
 import com.example.data.data_soruce.user.UserRemoteDataSourceImpl
 import com.example.data.repositories.auth.AuthRepositoryImpl
+import com.example.data.repositories.note.NoteRepositoryImpl
 import com.example.data.repositories.trip.TripRepositoryImpl
 import com.example.data.repositories.user.UserRepositoryImpl
 import com.example.domain.repositories.auth.AuthRemoteDataSource
 import com.example.domain.repositories.auth.AuthRepository
+import com.example.domain.repositories.note.NoteOfflineDataSource
+import com.example.domain.repositories.note.NoteRemoteDataSource
+import com.example.domain.repositories.note.NoteRepository
 import com.example.domain.repositories.trip.TripOfflineDataSource
 import com.example.domain.repositories.trip.TripRemoteDataSource
 import com.example.domain.repositories.trip.TripRepository
@@ -57,4 +63,18 @@ abstract class RepositoriesModule {
     @Binds
     @Singleton
     abstract fun provideTripRepository(tripRepositoryImpl: TripRepositoryImpl) : TripRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideNoteRepository(noteRepositoryImpl: NoteRepositoryImpl) : NoteRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideNoteRemoteDataSource(noteRemoteDataSourceImpl: NoteRemoteDataSourceImpl) : NoteRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun provideNoteOfflineDataSource(noteOfflineDataSourceImpl: NoteOfflineDataSourceImpl) : NoteOfflineDataSource
+
+
 }
