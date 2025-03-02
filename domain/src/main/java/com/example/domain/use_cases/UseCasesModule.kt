@@ -1,12 +1,15 @@
 package com.example.domain.use_cases
 
 import com.example.domain.repositories.auth.AuthRepository
+import com.example.domain.repositories.note.NoteRepository
 import com.example.domain.repositories.trip.TripNotificationScheduler
 import com.example.domain.repositories.trip.TripRepository
 import com.example.domain.repositories.user.UserRepository
 import com.example.domain.use_cases.auth.AuthUseCases
 import com.example.domain.use_cases.auth.LoginUseCase
 import com.example.domain.use_cases.auth.RegisterUseCase
+import com.example.domain.use_cases.note.AddNoteUseCase
+import com.example.domain.use_cases.note.NoteUseCases
 import com.example.domain.use_cases.trip.AddTripUseCase
 import com.example.domain.use_cases.trip.CancelScheduleTripNotificationUseCase
 import com.example.domain.use_cases.trip.DeleteTripUseCase
@@ -66,6 +69,15 @@ object UseCasesModule {
             deleteTripUseCase = DeleteTripUseCase(tripRepository),
             cancelScheduleTripNotificationUseCase = CancelScheduleTripNotificationUseCase(tripNotificationScheduler),
             updateTripUseCase = UpdateTripUseCase(tripRepository)
+        )
+    }
+
+    @Provides
+    fun provideNoteUseCases(
+        noteRepository: NoteRepository
+    ) : NoteUseCases{
+        return NoteUseCases(
+            addNoteUseCase = AddNoteUseCase(noteRepository)
         )
     }
 }

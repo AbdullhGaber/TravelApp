@@ -2,10 +2,12 @@ package com.example.data.mapper
 
 import com.example.data.model.ImageDataModel
 import com.example.data.model.ImageResponseModel
+import com.example.data.model.NoteModel
 import com.example.data.model.TripModel
 import com.example.data.model.TripUserModel
 import com.example.domain.entity.ImageDataEntity
 import com.example.domain.entity.ImageResponseEntity
+import com.example.domain.entity.NoteEntity
 import com.example.domain.entity.TripEntity
 import com.example.domain.entity.TripUserEntity
 
@@ -74,5 +76,21 @@ fun TripModel.toEntity() : TripEntity{
        returnTime,
        type,
        hasTimeCome
+    )
+}
+
+fun NoteEntity.toModel() : NoteModel{
+    return NoteModel(
+        text = text,
+        uid = uid,
+        tripId = tripId
+    )
+}
+
+fun NoteModel.toEntity() : NoteEntity{
+    return NoteEntity(
+        text = text,
+        uid = uid,
+        tripId = tripId
     )
 }
