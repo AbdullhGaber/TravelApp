@@ -47,7 +47,7 @@ fun TripEntity.toModel() : TripModel{
     return TripModel(
        id ?:"",
        uid,
-       notes,
+       notes.map{it.text},
        status,
        name,
        startDestination,
@@ -65,7 +65,7 @@ fun TripModel.toEntity() : TripEntity{
     return TripEntity(
        id,
        uid,
-       notes,
+       notes.map{NoteEntity(text = it)},
        status,
        name,
        startDestination,
