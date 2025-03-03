@@ -6,8 +6,4 @@ data class NoteEntity(
     val tripId : String = "",
     val uid : String = "",
     val addedTime : Long = 0L
-){
-    companion object{
-        const val NOTE_COLLECTION = "notes"
-    }
-}
+)
