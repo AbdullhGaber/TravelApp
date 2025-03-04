@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -175,11 +176,14 @@ fun TripDetailsCollapsingMenu(
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Text(
+                modifier = Modifier.fillMaxWidth(.6f),
                 text = trip.name,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
 
-            Text(text = trip.status)
+            Text(
+                text = trip.status,
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -305,6 +309,15 @@ fun UnfilledCircle(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreviewTripCard(){
     TravelAppTheme {
-        TripCard()
+        TripCard(
+            trip = TripEntity(
+                name = "Abdullh Love Ferry Habibty aaaaaaaaa",
+                startDestination = "Mansoura",
+                endDestination = "Benha",
+                status = "UPCOMING",
+                date = "5/3/2025",
+                time = "8:36 PM"
+            )
+        )
     }
 }
