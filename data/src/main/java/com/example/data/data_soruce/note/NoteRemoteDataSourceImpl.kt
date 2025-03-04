@@ -2,7 +2,6 @@ package com.example.data.data_soruce.note
 
 import android.util.Log
 import com.example.domain.entity.NoteEntity
-import com.example.domain.entity.NoteEntity.Companion.NOTE_COLLECTION
 import com.example.domain.entity.TripEntity
 import com.example.domain.entity.TripEntity.Companion.TRIP_COLLECTION
 import com.example.domain.entity.TripUserEntity.Companion.USER_COLLECTION
@@ -14,21 +13,28 @@ class NoteRemoteDataSourceImpl @Inject constructor(
     private val mFirebaseFireStore: FirebaseFirestore
 ): NoteRemoteDataSource {
     override fun addNote(note: NoteEntity, onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
-        val noteDocRef = mFirebaseFireStore
+        val tripDocRef = mFirebaseFireStore
             .collection(USER_COLLECTION)
             .document(note.uid)
             .collection(TRIP_COLLECTION)
             .document(note.tripId)
-            .collection(NOTE_COLLECTION)
-            .document()
 
-        note.id = noteDocRef.id
+        var notes : List<NoteEntity>
 
-        noteDocRef.set(note).addOnSuccessListener {
-            Log.e("FIB Firestore", "note added successfully")
-            onSuccess()
+        tripDocRef.get().addOnSuccessListener {  result ->
+            notes = result?.toObject(TripEntity::class.java)?.notes!!
+            notes = notes.toMutableList().apply { add(note) }
+
+            tripDocRef.update("notes", notes).addOnSuccessListener {
+                Log.e("FIB Fire store", "note added successfully")
+                onSuccess()
+            }.addOnFailureListener {
+                Log.e("FIB Fire store", "Error : ${it.message}")
+                onFailure(it)
+            }
+
         }.addOnFailureListener {
-            Log.e("FIB Firestore", "Error : ${it.message}")
+            Log.e("FIB Fire store", "Error : ${it.message}")
             onFailure(it)
         }
     }
@@ -39,28 +45,19 @@ class NoteRemoteDataSourceImpl @Inject constructor(
         onSuccess: (List<NoteEntity>) -> Unit,
         onFailure: (Throwable) -> Unit,
     ) {
-        val noteDocRef = mFirebaseFireStore
+        val tripDocRef = mFirebaseFireStore
             .collection(USER_COLLECTION)
             .document(uid)
             .collection(TRIP_COLLECTION)
             .document(tripId)
-            .collection(NOTE_COLLECTION)
 
-        noteDocRef.addSnapshotListener { snapShot , error ->
+        tripDocRef.addSnapshotListener { result ,error ->
             if(error != null){
                 onFailure(error)
                 Log.e("FIB FireStore" , "Error : ${error.message}")
             }
-
-            if(snapShot != null && !snapShot.isEmpty){
-                val notes = snapShot.toObjects(NoteEntity::class.java)
-                Log.e("FIB FireStore data source" , "notes retrieved")
-                onSuccess(notes)
-            }else{
-                Log.e("FIB FireStore data source", "No notes found")
-                onSuccess(emptyList())
-            }
+            val trip = result?.toObject(TripEntity::class.java)
+            onSuccess(trip?.notes?: emptyList())
         }
     }
-
 }
