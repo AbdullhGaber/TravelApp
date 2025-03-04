@@ -9,7 +9,6 @@ import com.example.data.uitls.Resource
 import com.example.domain.entity.NoteEntity
 import com.example.domain.use_cases.note.NoteUseCases
 import com.example.travelapp.R
-import com.google.android.gms.common.util.DataUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +38,7 @@ class NotesViewModel @Inject constructor(
         when(event){
             is NotesScreenEvent.OnAddButtonClick -> {
                 val note = NoteEntity(
+                    id = UUID.randomUUID().toString(),
                     text = noteTextState.value,
                     uid = DataUtil.tripUser?.uid ?: "",
                     tripId = event.tripId,
