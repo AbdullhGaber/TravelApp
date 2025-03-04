@@ -20,12 +20,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,12 +44,12 @@ import com.example.data.uitls.Resource
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
+import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.common.TripTextField
 
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel,
-    navigateToHome : () -> Unit,
     navigateToSignIn : () -> Unit,
 ){
 
@@ -63,11 +61,16 @@ fun RegisterScreen(
             .background(MaterialTheme.colorScheme.secondary)
     ){
         if(authStateFlow.value is Resource.Loading){
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp
-            )
+            Box(
+                Modifier.
+                fillMaxSize().
+                background(Color.Black.copy(alpha = 0.3f)).
+                clickable(enabled = false) {}
+            ){
+                TripCircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
 
         if(authStateFlow.value is Resource.Failure){
@@ -77,14 +80,6 @@ fun RegisterScreen(
                    viewModel.onEvent(RegisterScreenEvents.OnErrorDismiss)
                 }
             )
-        }
-
-        LaunchedEffect(Unit) {
-            viewModel.navigationSharedFlow.collect { navigate ->
-                if (navigate) {
-                    navigateToHome()
-                }
-            }
         }
 
         RegisterScreenContent(
@@ -368,7 +363,6 @@ private fun RegisterScreenHeader() {
 fun PreviewRegisterScreen() {
     RegisterScreen(
         viewModel = hiltViewModel(),
-        navigateToHome = {},
         navigateToSignIn = {}
     )
 }
