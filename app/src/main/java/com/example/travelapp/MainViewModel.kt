@@ -82,7 +82,6 @@ class MainViewModel @Inject constructor(
                 Log.e("MainViewModel","collected UID = $uid")
                 uid?.let{
                     getUser(uid)
-                    startDestination.value = Route.HomeNavigation.route
                 }
             }
         }
@@ -93,6 +92,7 @@ class MainViewModel @Inject constructor(
             onSuccess = { user ->
                 DataUtil.tripUser = user
                 Log.e("DataStore","User found successfully with uid : $uid")
+                startDestination.value = Route.HomeNavigation.route
             },
             onFailure = {
                 Log.e("DataStore Error","No user found")
@@ -116,7 +116,7 @@ class MainViewModel @Inject constructor(
 
     fun getShouldShowTripReminderDialog() = shouldShowTripReminderDialog.value
 
-    fun clearScheduledTripFlowState(){
+    private fun clearScheduledTripFlowState(){
         viewModelScope.launch {
             _scheduledTripsStateFlow.emit(Resource.Unspecified())
         }

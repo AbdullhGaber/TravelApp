@@ -2,6 +2,7 @@ package com.example.travelapp.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,12 +37,11 @@ import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
 import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.utils.AuthValidator
+
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    navigateToHome : () -> Unit,
     navigateToSignUp : () -> Unit
 ) {
     val authStateFlow = viewModel.authStateFlow.collectAsState()
@@ -52,9 +51,16 @@ fun LoginScreen(
             .background(MaterialTheme.colorScheme.secondary)
     ) {
         if (authStateFlow.value is Resource.Loading) {
-            TripCircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Box(
+                Modifier.
+                fillMaxSize().
+                background(Color.Black.copy(alpha = 0.3f)).
+                clickable(enabled = false) {}
+            ){
+                TripCircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
 
         if (authStateFlow.value is Resource.Failure) {
@@ -64,14 +70,6 @@ fun LoginScreen(
                     viewModel.onEvent(LoginScreenEvents.ClearAuthFlowState)
                 }
             )
-        }
-
-        LaunchedEffect(Unit) {
-            viewModel.navigationSharedFlow.collect { navigate ->
-                if (navigate) {
-                    navigateToHome()
-                }
-            }
         }
 
         LoginScreenContent(
@@ -241,7 +239,6 @@ fun LoginFooter(
 fun PreviewLoginScreen(){
     LoginScreen(
         viewModel = hiltViewModel(),
-        navigateToHome = {},
         navigateToSignUp = {}
     )
 }

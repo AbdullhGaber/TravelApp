@@ -5,17 +5,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
 import com.example.domain.manager.LocalUserManager
 import com.example.domain.use_cases.auth.AuthUseCases
-import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.utils.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,16 +19,12 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val mAuthUseCases: AuthUseCases,
-    private val mUserUseCases: UserUseCases,
     private val mLocalUserManager: LocalUserManager,
     @ApplicationContext private val mContext: Context
 ) : ViewModel() {
     val authValidator = AuthValidator(mContext)
     private val _authStateFlow = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val authStateFlow = _authStateFlow.asStateFlow()
-
-    private val _navigationSharedFlow = MutableSharedFlow<Boolean>()
-    val navigationSharedFlow = _navigationSharedFlow.asSharedFlow()
 
     private val loginErrorState = mutableStateOf("")
 
@@ -71,10 +63,8 @@ class LoginViewModel @Inject constructor(
                     password = passwordState.value,
                     onSuccess = { uid ->
                         viewModelScope.launch {
-                            _authStateFlow.emit(Resource.Success(Unit))
-                            _navigationSharedFlow.emit(true)
-                            uid?.let{getUser(it)}
                             Log.e("FIB Auth ViewModel" , "Logged successfully")
+                            mLocalUserManager.saveUserUID(uid = uid!!)
                         }
                     },
                     onFailure = {
@@ -87,21 +77,6 @@ class LoginViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    private fun getUser(uid : String){
-        mUserUseCases.getUserUseCase(
-            uid = uid,
-            onSuccess = { user ->
-                viewModelScope.launch {
-                    mLocalUserManager.saveUserUID(user.uid)
-                }
-                DataUtil.tripUser = user
-            },
-            onFailure = {
-                Log.e("FIB Auth ViewModel" , "Error : ${it.message}")
-            }
-        )
     }
 
     private fun areFieldsValid() : Boolean{

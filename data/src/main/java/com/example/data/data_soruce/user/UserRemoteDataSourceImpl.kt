@@ -44,16 +44,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
     ) {
         val userSnapshot = mFireStore.collection(TripUserEntity.USER_COLLECTION).document(uid).get()
         Log.e("FIB Auth" , "Call getUser from online data source")
-        mFireStore.disableNetwork().addOnCompleteListener {
-            Log.e("FIB Auth", "Firestore offline mode enabled")
-            mFireStore.enableNetwork().addOnCompleteListener {
-                Log.e("FIB Auth", "Firestore back online")
-            }
-        }
-
-        mFireStore.clearPersistence().addOnSuccessListener {
-            Log.e("FIB Auth", "Cleared Firestore cache on startup")
-        }
         userSnapshot.addOnSuccessListener { result ->
             val user = result.toObject(TripUserEntity::class.java)
            Log.e("FIB Auth" , "addOnSuccessListener Call getUser from online data source")
@@ -68,6 +58,8 @@ class UserRemoteDataSourceImpl @Inject constructor(
             Log.e("FIB Auth" , "Error : ${it.message}")
             onFailure(it)
         }
+
+        Log.e("FIB Auth" , "finish getUser from online data source")
     }
 
     override fun uploadImage(
