@@ -2,20 +2,21 @@ package com.example.travelapp.screens.nav_graph
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
+import com.example.travelapp.MainViewModel
 import com.example.travelapp.screens.login.LoginScreen
 import com.example.travelapp.screens.navigator.TripNavigator
 import com.example.travelapp.screens.register.RegisterScreen
 
 @Composable
 fun NavGraph(
-    startDestination : String
+    startDestination : String,
+    navController : NavHostController,
+    mainViewModel: MainViewModel
 ){
-    val navController = rememberNavController()
-
     NavHost(navController = navController, startDestination = startDestination){
         navigation(
             route = Route.AuthNavigation.route,
@@ -26,12 +27,6 @@ fun NavGraph(
             ){
                RegisterScreen(
                    viewModel = hiltViewModel(),
-                   navigateToHome = {
-                       navController.navigate(Route.HomeNavigation.route) {
-                           popUpTo(Route.RegisterScreen.route) { inclusive = true } // Clears the back stack
-                       }
-                   },
-
                    navigateToSignIn = {
                        navController.navigate(Route.LoginScreen.route)
                    }
@@ -43,11 +38,6 @@ fun NavGraph(
             ){
                 LoginScreen(
                     viewModel = hiltViewModel(),
-                    navigateToHome = {
-                       navController.navigate(Route.HomeNavigation.route) {
-                           popUpTo(Route.LoginScreen.route) { inclusive = true } // Clears the back stack
-                       }
-                    },
                     navigateToSignUp = {
                         navController.navigate(Route.RegisterScreen.route)
                     }
@@ -58,7 +48,9 @@ fun NavGraph(
         composable(
             route = Route.HomeNavigation.route
         ){
-            TripNavigator()
+            TripNavigator(
+                mainViewModel = mainViewModel
+            )
         }
     }
 }

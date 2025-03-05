@@ -43,9 +43,10 @@ class UserRemoteDataSourceImpl @Inject constructor(
         onFailure : (Throwable) -> Unit
     ) {
         val userSnapshot = mFireStore.collection(TripUserEntity.USER_COLLECTION).document(uid).get()
-
+        Log.e("FIB Auth" , "Call getUser from online data source")
         userSnapshot.addOnSuccessListener { result ->
             val user = result.toObject(TripUserEntity::class.java)
+           Log.e("FIB Auth" , "addOnSuccessListener Call getUser from online data source")
             if(user != null){
                 onSuccess(user)
                 Log.e("FIB Auth" , "User retrieved successfully")
@@ -54,9 +55,11 @@ class UserRemoteDataSourceImpl @Inject constructor(
                 Log.e("FIB Auth" , "Error : User is null")
             }
         }.addOnFailureListener {
-            onFailure(it)
             Log.e("FIB Auth" , "Error : ${it.message}")
+            onFailure(it)
         }
+
+        Log.e("FIB Auth" , "finish getUser from online data source")
     }
 
     override fun uploadImage(

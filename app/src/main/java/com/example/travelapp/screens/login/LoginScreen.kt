@@ -2,6 +2,7 @@ package com.example.travelapp.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,29 +35,32 @@ import com.example.data.uitls.Resource
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
+import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.ui.theme.LightBlue
-import com.example.travelapp.utils.isEmailValid
-import com.example.travelapp.utils.isPasswordValid
+
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    navigateToHome : () -> Unit,
     navigateToSignUp : () -> Unit
 ) {
     val authStateFlow = viewModel.authStateFlow.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         if (authStateFlow.value is Resource.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = LightBlue,
-                strokeWidth = 4.dp
-            )
+            Box(
+                Modifier.
+                fillMaxSize().
+                background(Color.Black.copy(alpha = 0.3f)).
+                clickable(enabled = false) {}
+            ){
+                TripCircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
 
         if (authStateFlow.value is Resource.Failure) {
@@ -67,14 +70,6 @@ fun LoginScreen(
                     viewModel.onEvent(LoginScreenEvents.ClearAuthFlowState)
                 }
             )
-        }
-
-        LaunchedEffect(Unit) {
-            viewModel.navigationSharedFlow.collect { navigate ->
-                if (navigate) {
-                    navigateToHome()
-                }
-            }
         }
 
         LoginScreenContent(
@@ -137,7 +132,7 @@ fun LoginForm(viewModel: LoginViewModel){
             onValueChange = {
                 viewModel.emailState.value = it
                 viewModel.emailErrorState.value = ""
-                isEmailValid(
+                viewModel.authValidator.isEmailValid(
                     email = it,
                     emailError = viewModel.emailErrorState
                 )
@@ -156,7 +151,7 @@ fun LoginForm(viewModel: LoginViewModel){
             onValueChange = {
                 viewModel.passwordState.value = it
                 viewModel.passwordErrorState.value = ""
-                isPasswordValid(
+                viewModel.authValidator.isPasswordValid(
                     password = it,
                     passwordError = viewModel.passwordErrorState
                 )
@@ -194,6 +189,7 @@ fun LoginFooter(
         Text(
             text = stringResource(R.string.sign_in_with),
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -202,17 +198,17 @@ fun LoginFooter(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ){
-            val social_media_icons = listOf(
+            val socialMediaIcons = listOf(
                 R.drawable.google_plus_ic,
                 R.drawable.facebook_ic,
                 R.drawable.linkedin_ic,
                 R.drawable.twitte__x_ic,
             )
 
-            repeat(social_media_icons.size){
+            repeat(socialMediaIcons.size){
                 Image(
                     modifier = Modifier.padding(horizontal = 4.dp).size(48.dp),
-                    painter = painterResource(id = social_media_icons[it]),
+                    painter = painterResource(id = socialMediaIcons[it]),
                     contentDescription = "Social Media Icon",
                     contentScale = ContentScale.FillBounds
                 )
@@ -223,7 +219,7 @@ fun LoginFooter(
 
         TextButton(
             colors = ButtonDefaults.textButtonColors(
-                contentColor = LightBlue
+                contentColor = MaterialTheme.colorScheme.tertiary
             ),
             onClick = {
                 navigateToSignUp()
@@ -243,7 +239,6 @@ fun LoginFooter(
 fun PreviewLoginScreen(){
     LoginScreen(
         viewModel = hiltViewModel(),
-        navigateToHome = {},
         navigateToSignUp = {}
     )
 }

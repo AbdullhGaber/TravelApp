@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.travelapp"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -64,10 +64,12 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.core.splashscreen)
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.places)
     ksp(libs.dagger.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit)

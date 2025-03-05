@@ -20,11 +20,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,18 +44,12 @@ import com.example.data.uitls.Resource
 import com.example.travelapp.R
 import com.example.travelapp.screens.common.ErrorDialog
 import com.example.travelapp.screens.common.PrimaryButton
+import com.example.travelapp.screens.common.TripCircularProgressIndicator
 import com.example.travelapp.screens.common.TripTextField
-import com.example.travelapp.ui.theme.LightBlue
-import com.example.travelapp.utils.isEmailValid
-import com.example.travelapp.utils.isPasswordValid
-import com.example.travelapp.utils.isPhoneNoValid
-import com.example.travelapp.utils.isRePasswordValid
-import com.example.travelapp.utils.isUsernameValid
 
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel,
-    navigateToHome : () -> Unit,
     navigateToSignIn : () -> Unit,
 ){
 
@@ -65,14 +58,19 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.secondary)
     ){
         if(authStateFlow.value is Resource.Loading){
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = LightBlue,
-                strokeWidth = 4.dp
-            )
+            Box(
+                Modifier.
+                fillMaxSize().
+                background(Color.Black.copy(alpha = 0.3f)).
+                clickable(enabled = false) {}
+            ){
+                TripCircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
 
         if(authStateFlow.value is Resource.Failure){
@@ -82,14 +80,6 @@ fun RegisterScreen(
                    viewModel.onEvent(RegisterScreenEvents.OnErrorDismiss)
                 }
             )
-        }
-
-        LaunchedEffect(Unit) {
-            viewModel.navigationSharedFlow.collect { navigate ->
-                if (navigate) {
-                    navigateToHome()
-                }
-            }
         }
 
         RegisterScreenContent(
@@ -147,7 +137,12 @@ private fun RegisterFormHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Text(text = "New\nAccount", fontSize = 26.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = "New\nAccount",
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
+        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -182,6 +177,7 @@ private fun RegisterFormHeader(
                     modifier = Modifier.fillMaxWidth(.4f),
                     textAlign = TextAlign.Center,
                     text = stringResource(R.string.upload_your_profile_picture),
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
         }
@@ -202,7 +198,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.emailState.value = it
             viewModel.emailErrorState.value = ""
-            isEmailValid(
+            viewModel.authValidator.isEmailValid(
                 email = it,
                 emailError = viewModel.emailErrorState
             )
@@ -222,7 +218,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.nameState.value = it
             viewModel.nameErrorState.value = ""
-            isUsernameValid(
+            viewModel.authValidator.isUsernameValid(
                 userName = it,
                 userNameError = viewModel.nameErrorState
             )
@@ -241,7 +237,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.passwordState.value = it
             viewModel.passwordErrorState.value = ""
-            isPasswordValid(
+            viewModel.authValidator.isPasswordValid(
                 password = it,
                 passwordError = viewModel.passwordErrorState
             )
@@ -267,7 +263,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.rePasswordState.value = it
             viewModel.rePasswordErrorState.value = ""
-            isRePasswordValid(
+            viewModel.authValidator.isRePasswordValid(
                 rePassword = it,
                 rePasswordError = viewModel.rePasswordErrorState,
                 password = viewModel.passwordState.value
@@ -293,7 +289,7 @@ private fun RegisterForm(
         onValueChange = {
             viewModel.phoneNoState.value = it
             viewModel.phoneNoErrorState.value = ""
-            isPhoneNoValid(
+            viewModel.authValidator.isPhoneNoValid(
                 phoneNo = it,
                 phoneNoError = viewModel.phoneNoErrorState
             )
@@ -325,12 +321,13 @@ private fun RegisterForm(
                 navigateToSignIn()
             },
             colors = ButtonDefaults.textButtonColors(
-                contentColor = LightBlue
+                contentColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Text(
                 text = "Already have an account? Sign In",
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
     }
@@ -366,7 +363,6 @@ private fun RegisterScreenHeader() {
 fun PreviewRegisterScreen() {
     RegisterScreen(
         viewModel = hiltViewModel(),
-        navigateToHome = {},
         navigateToSignIn = {}
     )
 }
