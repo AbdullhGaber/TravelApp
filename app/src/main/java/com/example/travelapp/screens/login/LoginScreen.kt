@@ -202,7 +202,7 @@ fun LoginFooter(
                 R.drawable.google_plus_ic,
                 R.drawable.facebook_ic,
                 R.drawable.linkedin_ic,
-                R.drawable.twitte__x_ic,
+                R.drawable.twitter_x_ic,
             )
 
             repeat(socialMediaIcons.size){
