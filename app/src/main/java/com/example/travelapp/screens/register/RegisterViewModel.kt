@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.uitls.DataUtil
 import com.example.data.uitls.Resource
 import com.example.domain.entity.TripUserEntity
 import com.example.domain.manager.LocalUserManager
@@ -18,9 +17,7 @@ import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.utils.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -39,9 +36,6 @@ class RegisterViewModel @Inject constructor(
 
     private val _profileImageStateFlow = MutableStateFlow<Resource<Bitmap?>>(Resource.Unspecified())
     val profileImageStateFlow = _profileImageStateFlow.asStateFlow()
-
-    private val _navigationSharedFlow = MutableSharedFlow<Boolean>()
-    val navigationSharedFlow = _navigationSharedFlow.asSharedFlow()
 
     private val registerErrorState = mutableStateOf("")
 
@@ -139,10 +133,7 @@ class RegisterViewModel @Inject constructor(
                                         user = user,
                                         onSuccess = {
                                             viewModelScope.launch {
-                                                _authStateFlow.emit(Resource.Success(Unit))
-                                                _navigationSharedFlow.emit(true)
-                                                mLocalUserManager.saveUserUID(user.uid)
-                                                DataUtil.tripUser = user
+                                                mLocalUserManager.saveUserUID(uid = user.uid)
                                             }
                                         },
                                         onFailure = {

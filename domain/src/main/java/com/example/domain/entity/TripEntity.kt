@@ -3,7 +3,7 @@ package com.example.domain.entity
 data class TripEntity(
     var id : String? = null,
     var uid : String = "",
-    val notes : List<String> = emptyList(),
+    val notes : List<NoteEntity> = emptyList(),
     val status : String = "",
     val name : String = "Trip",
     val startDestination : String = "",
