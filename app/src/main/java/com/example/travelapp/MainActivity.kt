@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
@@ -24,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    var navController : NavHostController? = null
+    private var navController : NavHostController? = null
     val viewModel : MainViewModel by viewModels()
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
@@ -49,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TravelAppTheme {
+                installSplashScreen().setKeepOnScreenCondition{viewModel.shouldSplashScreenOn.value}
                 navController = rememberNavController()
                 NavGraph(
                     navController = navController!!,

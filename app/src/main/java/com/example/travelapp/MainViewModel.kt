@@ -14,6 +14,7 @@ import com.example.domain.use_cases.user.UserUseCases
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.upcoming.UpcomingEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,6 +27,9 @@ class MainViewModel @Inject constructor(
     private val mTripUseCases: TripUseCases,
 ) : ViewModel() {
     var startDestination = mutableStateOf(Route.AuthNavigation.route)
+        private set
+
+    var shouldSplashScreenOn = mutableStateOf(true)
         private set
 
     private val _scheduledTripsStateFlow = MutableStateFlow<Resource<List<TripEntity>?>>(Resource.Unspecified())
@@ -79,6 +83,7 @@ class MainViewModel @Inject constructor(
     private fun setStartDestination(){
         viewModelScope.launch {
             mLocalUserManager.getUserUID().collect{ uid ->
+                if(uid == null) shouldSplashScreenOn.value = false
                 Log.e("MainViewModel","collected UID = $uid")
                 uid?.let{
                     getUser(uid)
@@ -93,6 +98,10 @@ class MainViewModel @Inject constructor(
                 DataUtil.tripUser = user
                 Log.e("DataStore","User found successfully with uid : $uid")
                 startDestination.value = Route.HomeNavigation.route
+                viewModelScope.launch {
+                    delay(2000)
+                    shouldSplashScreenOn.value = false
+                }
             },
             onFailure = {
                 Log.e("DataStore Error","No user found")
