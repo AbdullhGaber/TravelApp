@@ -113,6 +113,7 @@ interface TripNotificationScheduler {
 fun interface NotificationHandler {
     fun startService(
         tripId: String,
+        tripType: String,
         tripName: String,
         tripStartDes: String,
         tripEndDes: String,
