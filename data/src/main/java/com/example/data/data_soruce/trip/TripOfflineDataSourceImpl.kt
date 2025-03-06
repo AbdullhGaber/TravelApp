@@ -7,9 +7,6 @@ import com.example.data.mapper.toEntity
 import com.example.data.mapper.toModel
 import com.example.domain.entity.TripEntity
 import com.example.domain.repositories.trip.TripOfflineDataSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
@@ -22,7 +19,7 @@ class TripOfflineDataSourceImpl @Inject constructor(
           return mTripDao.getAllTrips().map{ it.map { it.toEntity() } }
     }
 
-    override suspend fun addTrip(trip: TripEntity, ) {
+    override suspend fun addTrip(trip: TripEntity) {
         mTripDao.addTrip(trip.toModel())
     }
 
@@ -31,7 +28,8 @@ class TripOfflineDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateTripHasTimeCome(id: String,@IntRange(0,1) value: Int) {
-        mTripDao.updateHasTimeCome(id, value)
+        mTripDao.updateHasFirstTripTimeCome(id, value)
+        mTripDao.updateHasSecondTripTimeCome(id, value)
     }
 
     override suspend fun deleteTrip(

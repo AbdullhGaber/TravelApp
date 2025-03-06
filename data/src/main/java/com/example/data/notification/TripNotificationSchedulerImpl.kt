@@ -9,6 +9,7 @@ import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
 import com.example.data.uitls.Constants.TRIP_ID_KEY
 import com.example.data.uitls.Constants.TRIP_NAME_KEY
 import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
+import com.example.data.uitls.Constants.TRIP_TYPE_KEY
 import com.example.data.uitls.formatTimeDate
 import com.example.domain.entity.TripEntity
 import com.example.domain.repositories.trip.TripNotificationScheduler
@@ -24,6 +25,7 @@ class TripNotificationSchedulerImpl @Inject constructor(
         val intent = Intent(mContext, TripReminderReceiver::class.java)
             .apply {
                 putExtra(TRIP_ID_KEY , trip.id)
+                putExtra(TRIP_TYPE_KEY ,TripEntity.ONE_DIRECTION_TRIP)
                 putExtra(TRIP_NAME_KEY , trip.name)
                 putExtra(TRIP_START_DESTINATION_KEY , trip.startDestination)
                 putExtra(TRIP_END_DESTINATION_KEY , trip.endDestination)
@@ -46,6 +48,34 @@ class TripNotificationSchedulerImpl @Inject constructor(
                 pendingIntent
             )
         }
+
+        if(trip.type == TripEntity.ROUND_DIRECTION_TRIP){
+            val secIntent = Intent(mContext, TripReminderReceiver::class.java).apply {
+                putExtra(TRIP_ID_KEY , trip.id)
+                putExtra(TRIP_TYPE_KEY ,TripEntity.ROUND_DIRECTION_TRIP)
+                putExtra(TRIP_NAME_KEY , trip.name)
+                putExtra(TRIP_START_DESTINATION_KEY , trip.endDestination)
+                putExtra(TRIP_END_DESTINATION_KEY ,trip.startDestination)
+                data = Uri.parse("trip://reminder2/${trip.id}")
+            }
+
+            val secPendingIntent = PendingIntent.getBroadcast(
+                mContext,
+                1 ,
+                secIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val secTriggerTime = formatTimeDate(time = trip.returnTime!!, date = trip.returnDate!!)?.time
+
+            secTriggerTime?.let{
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    it,
+                    secPendingIntent
+                )
+            }
+        }
     }
 
     override fun cancelTripSchedule(trip: TripEntity) {
@@ -64,5 +94,21 @@ class TripNotificationSchedulerImpl @Inject constructor(
         )
 
         alarmManager.cancel(pendingIntent)
+
+        if(trip.type == TripEntity.ROUND_DIRECTION_TRIP){
+            val secIntent = Intent(mContext, TripReminderReceiver::class.java)
+                .apply {
+                    data = Uri.parse("trip://reminder2/${trip.id}")
+                }
+
+            val secPendingIntent = PendingIntent.getBroadcast(
+                mContext,
+                1 ,
+                secIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            alarmManager.cancel(secPendingIntent)
+        }
     }
 }
