@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.data.uitls.Resource
 import com.example.domain.entity.TripEntity
-import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.notification.StopReminderReceiver
 import com.example.travelapp.notification.TripReminderForegroundService.Companion.STOP_ACTION
@@ -55,7 +54,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun UpcomingScreen(
     viewModel: UpcomingViewModel = hiltViewModel(),
-    mainViewModel : MainViewModel,
     navigateToAddTrip : () -> Unit = {},
     navigateToEditTrip : (TripEntity) -> Unit = {},
     navigateToNotesScreen : (String) -> Unit = {},
@@ -134,23 +132,33 @@ fun UpcomingScreen(
                 if(tripsState.value is Resource.Loading){
                     TripCardListShimmerEffect()
                 }
-                val scheduledTrips = mainViewModel.scheduledTripsStateFlow.collectAsState()
+                val scheduledTrips = viewModel.scheduledTripsStateFlow.collectAsState()
 
                 if(scheduledTrips.value is Resource.Success){
-                    mainViewModel.showTripReminderDialog()
+                    viewModel.showTripReminderDialog()
                 }
 
-                if(mainViewModel.getShouldShowTripReminderDialog()){
+                if(viewModel.getShouldShowTripReminderDialog()){
                     if( scheduledTrips.value.data!!.isNotEmpty()){
-                        val trip = scheduledTrips.value.data!!.last()
+                        var trip = scheduledTrips.value.data!!.last()
+                        if(trip.hasSecondTripTimeCome){
+                           trip = trip.switchStartWithEndDestination()
+                        }
+
                         TripReminderDialog(
                             trip = trip ,
                             onCancelClick = {
-                                mainViewModel.onEvent(UpcomingEvents.OnTripReminderDialogCancelClick(trip.id.toString(),0))
+                                viewModel.onEvent(UpcomingEvents.OnTripReminderDialogCancelClick(trip.id.toString()))
                                 val stopIntent = Intent(context, StopReminderReceiver::class.java).apply {
                                     action = STOP_ACTION
                                 }
-
+                                context.sendBroadcast(stopIntent)
+                            },
+                            onLaterClick = {
+                                viewModel.onEvent(UpcomingEvents.OnTripReminderDialogLaterClick(trip,15*60*1000))
+                                val stopIntent = Intent(context, StopReminderReceiver::class.java).apply {
+                                    action = STOP_ACTION
+                                }
                                 context.sendBroadcast(stopIntent)
                             }
                         )

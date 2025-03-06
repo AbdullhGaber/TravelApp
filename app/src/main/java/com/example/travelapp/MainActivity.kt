@@ -2,7 +2,6 @@ package com.example.travelapp
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,11 +12,6 @@ import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.data.uitls.Constants.SHOW_TRIP_REMINDER_KEY
-import com.example.data.uitls.Constants.TRIP_END_DESTINATION_KEY
-import com.example.data.uitls.Constants.TRIP_ID_KEY
-import com.example.data.uitls.Constants.TRIP_NAME_KEY
-import com.example.data.uitls.Constants.TRIP_START_DESTINATION_KEY
 import com.example.travelapp.screens.nav_graph.NavGraph
 import com.example.travelapp.ui.theme.TravelAppTheme
 import com.example.travelapp.utils.hasPostNotificationPermission
@@ -44,9 +38,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         if(!hasPostNotificationPermission(this))
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        if(intent != null){
-            this.onNewIntent(intent)
-        }
 
         setContent {
             TravelAppTheme {
@@ -54,24 +45,9 @@ class MainActivity : ComponentActivity() {
                 navController = rememberNavController()
                 NavGraph(
                     navController = navController!!,
-                    mainViewModel = viewModel,
                     startDestination = viewModel.startDestination.value
                 )
             }
         }
     }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        val shouldShowDialog = intent.getBooleanExtra(SHOW_TRIP_REMINDER_KEY, false)
-        val tripId = intent.getStringExtra(TRIP_ID_KEY) ?: "My Trip"
-        val tripName = intent.getStringExtra(TRIP_NAME_KEY) ?: "My Trip"
-        val tripStartDes = intent.getStringExtra(TRIP_START_DESTINATION_KEY) ?: "My Start Des"
-        val tripEndDes = intent.getStringExtra(TRIP_END_DESTINATION_KEY) ?: "My Start Des"
-        if (shouldShowDialog) {
-            viewModel.showTripReminderDialog()
-            viewModel.setTripDataForNotification(tripId, tripName,tripStartDes,tripEndDes)
-        }
-    }
-
 }

@@ -13,8 +13,15 @@ data class TripEntity(
     val returnDate : String? = null,
     val returnTime : String? = null,
     val type : String = "",
-    var hasTimeCome : Boolean = false
+    var hasFirstTripTimeCome : Boolean = false,
+    var hasSecondTripTimeCome : Boolean = false
 ){
+    fun switchStartWithEndDestination() : TripEntity{
+        return this.copy(
+            startDestination = endDestination,
+            endDestination = startDestination
+        )
+    }
     companion object {
         const val TRIP_COLLECTION = "trips"
 

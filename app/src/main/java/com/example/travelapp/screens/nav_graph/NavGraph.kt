@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.travelapp.MainViewModel
 import com.example.travelapp.screens.login.LoginScreen
 import com.example.travelapp.screens.navigator.TripNavigator
 import com.example.travelapp.screens.register.RegisterScreen
@@ -15,7 +14,6 @@ import com.example.travelapp.screens.register.RegisterScreen
 fun NavGraph(
     startDestination : String,
     navController : NavHostController,
-    mainViewModel: MainViewModel
 ){
     NavHost(navController = navController, startDestination = startDestination){
         navigation(
@@ -48,9 +46,7 @@ fun NavGraph(
         composable(
             route = Route.HomeNavigation.route
         ){
-            TripNavigator(
-                mainViewModel = mainViewModel
-            )
+            TripNavigator()
         }
     }
 }

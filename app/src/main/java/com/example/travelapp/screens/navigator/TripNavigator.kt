@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +17,6 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -50,7 +47,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.data.uitls.DataUtil
 import com.example.data.uitls.NetworkUtil
-import com.example.travelapp.MainViewModel
 import com.example.travelapp.R
 import com.example.travelapp.screens.nav_graph.Route
 import com.example.travelapp.screens.navigator.components.NavItems
@@ -64,21 +60,15 @@ import com.example.travelapp.ui.theme.LightGray
 import java.io.File
 
 @Composable
-fun TripNavigator(
-    mainViewModel: MainViewModel
-){
+fun TripNavigator(){
     val navController = rememberNavController()
-    val navigatorViewModel : NavigatorViewModel = hiltViewModel()
 
    ModalNavigationDrawer(
        drawerContent = {
            ModalDrawerSheet(
                modifier = Modifier.fillMaxWidth(0.8f),
            ) {
-               DrawerContent(
-                   navController = navController,
-                   navigatorViewModel = navigatorViewModel
-               )
+               DrawerContent(navController = navController)
            }
        }
    ){
@@ -87,7 +77,6 @@ fun TripNavigator(
                 route = Route.UpComingScreen.route
             ){
                 UpcomingScreen(
-                    mainViewModel = mainViewModel,
                     navigateToAddTrip = {
                         navController.navigate(Route.AddTripScreen.route)
                     },
@@ -148,7 +137,6 @@ fun TripNavigator(
 
 @Composable
 private fun DrawerContent(
-    navigatorViewModel: NavigatorViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
 
