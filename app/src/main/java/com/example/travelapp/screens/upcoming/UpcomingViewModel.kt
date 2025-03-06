@@ -2,6 +2,7 @@ package com.example.travelapp.screens.upcoming
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.uitls.DataUtil
@@ -32,12 +33,21 @@ class UpcomingViewModel @Inject constructor(
     private val _lastDeletedTripStateFlow = MutableStateFlow(TripEntity())
     val lastDeletedTripStateFlow = _lastDeletedTripStateFlow.asStateFlow()
 
+    private val _scheduledTripsStateFlow = MutableStateFlow<Resource<List<TripEntity>?>>(Resource.Unspecified())
+    val scheduledTripsStateFlow = _scheduledTripsStateFlow.asStateFlow()
+
     init {
         getTrips()
+        getScheduledTrips()
     }
+
     fun onEvent(event: UpcomingEvents){
         when(event){
-            is UpcomingEvents.OnTripReminderDialogCancelClick -> Unit
+            is UpcomingEvents.OnTripReminderDialogCancelClick -> {
+                dismissTripReminderDialog()
+                clearScheduledTripFlowState()
+                cancelTrip(event.tripId)
+            }
 
             is UpcomingEvents.OnTripCardDeleteClick -> {
                 deleteTrip(event.trip)
@@ -48,6 +58,35 @@ class UpcomingViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getScheduledTrips(){
+        viewModelScope.launch {
+            _scheduledTripsStateFlow.emit(Resource.Loading())
+        }
+
+        viewModelScope.launch {
+            try{
+                mTripUseCases.getScheduledTrips().collect{trips ->
+                    _scheduledTripsStateFlow.emit(Resource.Success(trips))
+                }
+            }catch (e : Exception){
+                viewModelScope.launch {
+                    _scheduledTripsStateFlow.emit(Resource.Failure(e.message))
+                }
+            }
+        }
+    }
+
+    private fun cancelTrip(id : String){
+        viewModelScope.launch {
+            try{
+                mTripUseCases.tripReminderCancelUseCase(id,0)
+            }catch(e : Exception){
+                Log.e("MainViewModel Error", e.message.toString())
+            }
+        }
+    }
+
     private fun undoDeleteTrip(trip : TripEntity){
         mTripUseCases.addTripUseCase(
             trip = trip,
@@ -110,5 +149,22 @@ class UpcomingViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    private val shouldShowTripReminderDialog = mutableStateOf(false)
+
+    fun getShouldShowTripReminderDialog() = shouldShowTripReminderDialog.value
+
+    private fun clearScheduledTripFlowState(){
+        viewModelScope.launch {
+            _scheduledTripsStateFlow.emit(Resource.Unspecified())
+        }
+    }
+    fun showTripReminderDialog() {
+        shouldShowTripReminderDialog.value = true
+    }
+
+    private fun dismissTripReminderDialog() {
+        shouldShowTripReminderDialog.value = false
     }
 }
