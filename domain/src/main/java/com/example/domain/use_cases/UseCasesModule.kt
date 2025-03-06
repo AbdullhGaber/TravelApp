@@ -17,6 +17,7 @@ import com.example.domain.use_cases.trip.DeleteTripUseCase
 import com.example.domain.use_cases.trip.GetScheduledTrips
 import com.example.domain.use_cases.trip.GetTripByIdUseCase
 import com.example.domain.use_cases.trip.GetTripUseCase
+import com.example.domain.use_cases.trip.RescheduleTripNotificationUseCase
 import com.example.domain.use_cases.trip.ScheduleTripNotificationUseCase
 import com.example.domain.use_cases.trip.TripUseCases
 import com.example.domain.use_cases.trip.TripReminderCancelUseCase
@@ -68,7 +69,8 @@ object UseCasesModule {
             tripReminderCancelUseCase = TripReminderCancelUseCase(tripRepository),
             deleteTripUseCase = DeleteTripUseCase(tripRepository),
             cancelScheduleTripNotificationUseCase = CancelScheduleTripNotificationUseCase(tripNotificationScheduler),
-            updateTripUseCase = UpdateTripUseCase(tripRepository)
+            updateTripUseCase = UpdateTripUseCase(tripRepository),
+            rescheduleTripNotificationUseCase = RescheduleTripNotificationUseCase(tripNotificationScheduler)
         )
     }
 

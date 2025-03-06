@@ -107,6 +107,7 @@ interface TripOfflineDataSource{
 
 interface TripNotificationScheduler {
     fun schedule(trip: TripEntity)
+    fun reschedule(trip: TripEntity,snoozeTime : Long, isFirstTrip : Boolean)
     fun cancelTripSchedule(trip: TripEntity)
 }
 

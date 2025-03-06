@@ -78,6 +78,66 @@ class TripNotificationSchedulerImpl @Inject constructor(
         }
     }
 
+    override fun reschedule(trip: TripEntity, snoozeTime: Long, isFirstTrip: Boolean) {
+        val alarmManager = mContext.getSystemService(AlarmManager::class.java)
+        if(isFirstTrip.not()){
+            val secIntent = Intent(mContext, TripReminderReceiver::class.java).apply {
+                putExtra(TRIP_ID_KEY , trip.id)
+                putExtra(TRIP_TYPE_KEY ,TripEntity.ROUND_DIRECTION_TRIP)
+                putExtra(TRIP_NAME_KEY , trip.name)
+                putExtra(TRIP_START_DESTINATION_KEY , trip.endDestination)
+                putExtra(TRIP_END_DESTINATION_KEY ,trip.startDestination)
+                data = Uri.parse("trip://reminder2/${trip.id}")
+            }
+
+            val secPendingIntent = PendingIntent.getBroadcast(
+                mContext,
+                1 ,
+                secIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val secTriggerTime = System.currentTimeMillis() + snoozeTime
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                secTriggerTime,
+                secPendingIntent
+            )
+
+            return
+        }
+
+        val intent = Intent(mContext, TripReminderReceiver::class.java)
+            .apply {
+                putExtra(TRIP_ID_KEY , trip.id)
+                putExtra(TRIP_TYPE_KEY ,TripEntity.ONE_DIRECTION_TRIP)
+                putExtra(TRIP_NAME_KEY , trip.name)
+                putExtra(TRIP_START_DESTINATION_KEY , trip.startDestination)
+                putExtra(TRIP_END_DESTINATION_KEY , trip.endDestination)
+                data = Uri.parse("trip://reminder/${trip.id}")
+            }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            mContext,
+            0 ,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val triggerTime = System.currentTimeMillis() + snoozeTime
+
+        if(trip.type == TripEntity.ROUND_DIRECTION_TRIP && triggerTime > formatTimeDate(time = trip.returnTime!!, date = trip.returnDate!!)?.time!!){
+            alarmManager.cancel(pendingIntent)
+        }
+
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            triggerTime,
+            pendingIntent
+        )
+    }
+
     override fun cancelTripSchedule(trip: TripEntity) {
         val alarmManager = mContext.getSystemService(AlarmManager::class.java)
 

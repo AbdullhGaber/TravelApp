@@ -49,6 +49,12 @@ class UpcomingViewModel @Inject constructor(
                 cancelTrip(event.tripId)
             }
 
+            is UpcomingEvents.OnTripReminderDialogLaterClick -> {
+                dismissTripReminderDialog()
+                rescheduleTrip(event.trip,event.snoozeTime)
+                clearScheduledTripFlowState()
+            }
+
             is UpcomingEvents.OnTripCardDeleteClick -> {
                 deleteTrip(event.trip)
             }
@@ -57,6 +63,10 @@ class UpcomingViewModel @Inject constructor(
                 undoDeleteTrip(event.trip)
             }
         }
+    }
+
+    private fun rescheduleTrip(trip: TripEntity, snoozeTime : Long){
+        mTripUseCases.rescheduleTripNotificationUseCase(trip,snoozeTime,trip.hasFirstTripTimeCome)
     }
 
     private fun getScheduledTrips(){

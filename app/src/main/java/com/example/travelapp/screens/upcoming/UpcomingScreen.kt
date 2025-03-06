@@ -152,7 +152,13 @@ fun UpcomingScreen(
                                 val stopIntent = Intent(context, StopReminderReceiver::class.java).apply {
                                     action = STOP_ACTION
                                 }
-
+                                context.sendBroadcast(stopIntent)
+                            },
+                            onLaterClick = {
+                                viewModel.onEvent(UpcomingEvents.OnTripReminderDialogLaterClick(trip,15*60*1000))
+                                val stopIntent = Intent(context, StopReminderReceiver::class.java).apply {
+                                    action = STOP_ACTION
+                                }
                                 context.sendBroadcast(stopIntent)
                             }
                         )
