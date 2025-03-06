@@ -57,7 +57,8 @@ fun TripEntity.toModel() : TripModel{
        returnDate,
        returnTime,
        type,
-       hasTimeCome
+       hasFirstTripTimeCome,
+       hasSecondTripTimeCome
     )
 }
 
@@ -75,7 +76,8 @@ fun TripModel.toEntity() : TripEntity{
        returnDate,
        returnTime,
        type,
-       hasTimeCome
+       hasFirstTripTimeCome,
+       hasSecondTripTimeCome
     )
 }
 
