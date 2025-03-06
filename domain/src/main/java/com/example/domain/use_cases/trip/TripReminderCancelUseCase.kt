@@ -4,7 +4,7 @@ import androidx.annotation.IntRange
 import com.example.domain.repositories.trip.TripRepository
 import javax.inject.Inject
 
-class UpdateTripHasTimeComeUseCase @Inject constructor(
+class TripReminderCancelUseCase @Inject constructor(
     private val mTripRepository: TripRepository
 ) {
     suspend operator fun invoke(id : String, @IntRange(0,1) value : Int){

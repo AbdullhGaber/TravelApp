@@ -19,7 +19,7 @@ import com.example.domain.use_cases.trip.GetTripByIdUseCase
 import com.example.domain.use_cases.trip.GetTripUseCase
 import com.example.domain.use_cases.trip.ScheduleTripNotificationUseCase
 import com.example.domain.use_cases.trip.TripUseCases
-import com.example.domain.use_cases.trip.UpdateTripHasTimeComeUseCase
+import com.example.domain.use_cases.trip.TripReminderCancelUseCase
 import com.example.domain.use_cases.trip.UpdateTripUseCase
 import com.example.domain.use_cases.user.GetUserUseCase
 import com.example.domain.use_cases.user.SaveImageUseCase
@@ -28,7 +28,6 @@ import com.example.domain.use_cases.user.UserUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -66,7 +65,7 @@ object UseCasesModule {
             addTripUseCase = AddTripUseCase(tripRepository),
             getTripByIdUseCase = GetTripByIdUseCase(tripRepository),
             getScheduledTrips = GetScheduledTrips(tripRepository),
-            updateTripHasTimeComeUseCase = UpdateTripHasTimeComeUseCase(tripRepository),
+            tripReminderCancelUseCase = TripReminderCancelUseCase(tripRepository),
             deleteTripUseCase = DeleteTripUseCase(tripRepository),
             cancelScheduleTripNotificationUseCase = CancelScheduleTripNotificationUseCase(tripNotificationScheduler),
             updateTripUseCase = UpdateTripUseCase(tripRepository)
